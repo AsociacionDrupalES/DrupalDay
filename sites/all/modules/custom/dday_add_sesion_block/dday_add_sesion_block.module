@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * This module creates a block width rss feed link with the parameters from url.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function dday_add_sesion_block_block_info() {
+
+  $blocks['dday_add_sesion_block'] = array(
+    'info' => t('Drupal day link to Submit Session'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ * Adds a block with a link to rss.xml with the parameters from url.
+ */
+function dday_add_sesion_block_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'dday_add_sesion_block':
+      $block['subject'] = '';
+      $block['content'] = l(
+        t('Submit a session'),
+        drupal_get_path_alias('user/register'),
+        array(
+          'query' => array('destination' => drupal_get_path_alias('node/add/sesion')),
+          'attributes' => array('class' => array('submit-sesion', 'button'))
+          )
+        );
+      break;
+  }
+  return $block;
+}
+

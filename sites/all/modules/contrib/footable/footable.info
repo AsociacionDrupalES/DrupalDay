@@ -1,0 +1,18 @@
+name = FooTable
+description = Provides Views integration for the jQuery FooTable plugin
+dependencies[] = views
+package = Views
+core = 7.x
+
+files[] = footable.install
+files[] = footable.module
+files[] = views/footable-view.tpl.php
+files[] = views/footable.view.inc
+files[] = views/footable_style_plugin.inc
+
+; Information added by Drupal.org packaging script on 2014-09-21
+version = "7.x-1.0-rc1"
+core = "7.x"
+project = "footable"
+datestamp = "1411333584"
+

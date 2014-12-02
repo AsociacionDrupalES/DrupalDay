@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * This module creates a block width rss feed link with the parameters from url.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function dday_register_block_block_info() {
+
+  $blocks['dday_register_block'] = array(
+    'info' => t('Drupal day link to register'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ * Adds a block with a link to rss.xml with the parameters from url.
+ */
+function dday_register_block_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'dday_register_block':
+      $block['subject'] = '';
+      $block['content'] = l(
+        t('Register'),
+        drupal_get_path_alias('user/register'),
+        array(
+          'attributes' => array('class' => array('dday-register-block', 'button'))
+          )
+        );
+      break;
+  }
+  return $block;
+}
+

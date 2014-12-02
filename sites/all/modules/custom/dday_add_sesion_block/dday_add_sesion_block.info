@@ -1,0 +1,4 @@
+name = Drupal Day Add Sesions block
+description = A module that creates a block with link to submit sesions.
+package = Drupal Day
+core = 7.x

@@ -1,0 +1,32 @@
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings*.php
+
+# Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private
+
+# Root removed files
+UPGRADE.txt
+CHANGELOG.txt
+COPYRIGHT.txt
+INSTALL.mysql.txt
+INSTALL.pgsql.txt
+INSTALL.sqlite.txt
+INSTALL.txt
+LICENSE.txt
+MAINTAINERS.txt
+README.txt
+PGRADE.txt
+web.config
+xmlrpc.php
+install.php
+
+# IDEs
+.idea
+
+# Netbeans
+/nbproject/private/
+/nbproject/
+
+# KDE directory view info
+.directory

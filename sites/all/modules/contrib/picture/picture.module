@@ -1,0 +1,1472 @@
+<?php
+
+/**
+ * @file
+ * Picture formatter.
+ */
+define('PICTURE_EMPTY_IMAGE', '_empty image_');
+define('PICTURE_ORIGINAL_IMAGE', '_original image_');
+
+if (!variable_get('picture_updated_to_file_entity_2', FALSE)) {
+  module_load_include('file_entity_1.inc', 'picture');
+}
+
+/**
+ * Implements hook_help().
+ */
+function picture_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case 'admin/help#picture':
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Picture module provides an image formatter and breakpoint mappings to output responsive images using the HTML5 picture tag. For more information, see the <a href="!picture">online documentation for the Picture module</a>.', array( '!picture' => 'https://drupal.org/documentation/modules/picture')) . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Defining picture mappings') . '</dt>';
+      $output .= '<dd>' . t('By creating picture mappings you define the image styles that are being used to output images at certain breakpoints. On the <a href="!picture_mapping">Picture mappings</a> page, click <em>Add picture mapping</em> to create a new mapping. First chose a label and a breakpoint group and click Save. After that you can choose the image styles that will be used for each breakpoint. Image styles can be defined on the <a href="!image_styles">Image styles page</a> that is provided by the <a href="!image_help">Image module</a>. Breakpoints are defined in the info files of the theme or you can create custom breakpoints. See the <a href="!breakpoint_help">help page of the Breakpoint module</a> for more information.', array('!picture_mapping' => url('admin/config/media/picture'), '!image_styles' => url('admin/config/media/image-styles'), '!image_help' => url('admin/help/image'), '!breakpoint_help' => url('admin/help/breakpoints'))) . '</dd>';
+      $output .= '<dt>' . t('Using picture mappings in Image fields') . '</dt>';
+      $output .= '<dd>' . t('After defining responsive image mappings, you can use them in the display settings for your Image fields, so that the site displays responsive images using the HTML5 picture tag. Open the Manage display page for the entity type (content type, taxonomy vocabulary, etc.) that the Image field is attached to. Choose the format <em>Picture</em>, click the Edit icon, and select one of the picture mappings that you have created. For general information on how to manage fields and their display see the <a href="!field_ui">help page of the Field UI module</a>.', array('!field_ui' => url('admin/help/field_ui'))) . '</dd>';
+      $output .= '</dl>';
+      break;
+
+    case 'admin/config/media/picture':
+      $output .= '<p>' . t('A picture mapping associates an image style with each breakpoint defined by your theme.') . '</p>';
+      break;
+
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function picture_requirements($phase) {
+  $requirements = array();
+  if (module_exists('colorbox')) {
+    $info = system_get_info('module', 'colorbox');
+    $requirements['picture_colorbox'] = array(
+      'title' => t('Picture: Colorbox module version.'),
+      'value' => $info['version'],
+      'severity' => REQUIREMENT_OK,
+    );
+    if (version_compare($info['version'], '7.x-2.5') < 0) {
+      $requirements['picture_colorbox']['description'] = t('The Colorbox module must be version 7.x-2.5 or higher in order to work with the Picture module.');
+      $requirements['picture_colorbox']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function picture_permission() {
+  return array(
+    'administer pictures' => array(
+      'title' => t('Administer Pictures'),
+      'description' => t('Administer Pictures'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function picture_menu() {
+  $items = array();
+  $items['admin/config/media/picture/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_LOCAL_TASK,
+    'description' => 'Picture settings (CKEditor, File Entity, ...)',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('picture_admin_settings'),
+    'access arguments' => array('administer pictures'),
+    'file' => 'picture.admin.inc',
+    'weight' => 0,
+  );
+  return $items;
+}
+
+/**
+ * Load mappings.
+ */
+function picture_mapping_load($name) {
+  ctools_include('export');
+  if ($name) {
+    $mappings = ctools_export_load_object('picture_mapping', 'names', array($name));
+    $mapping = isset($mappings[$name]) ? $mappings[$name] : FALSE;
+    return $mapping;
+  }
+  return FALSE;
+}
+
+/**
+ * Load all mappings.
+ */
+function picture_mapping_load_all() {
+  ctools_include('export');
+  return ctools_export_load_object('picture_mapping');
+}
+
+/**
+ * Save mappings.
+ */
+function picture_mapping_save(PictureMapping $mapping) {
+  return $mapping->save();
+}
+
+/**
+ * Implements hook_library().
+ */
+function picture_library() {
+  $libraries = array();
+  $libraries['picturefill_head'] = array(
+    'title' => t('Picturefill head fix'),
+    'version' => '2.0',
+    'js' => array(
+      'document.createElement( "picture" );' => array(
+        'type' => 'inline',
+        'weight' => -10,
+        'group' => JS_DEFAULT,
+        'scope' => 'header',
+        'need_jquery' => FALSE,
+      ),
+    ),
+  );
+  $libraries['picturefill'] = array(
+    'title' => t('Picturefill'),
+    'website' => 'https://github.com/scottjehl/picturefill',
+    'version' => '2.0',
+    'js' => array(
+      drupal_get_path('module', 'picture') . '/picturefill2/picturefill.js' => array(
+        'type' => 'file',
+        'weight' => -10,
+        'group' => JS_DEFAULT,
+        'scope' => variable_get('picture_js_scope', 'footer'),
+        'need_jquery' => FALSE,
+        'async' => TRUE,
+      ),
+    ),
+  );
+  $libraries['picture.ajax'] = array(
+    'title' => t('Ajax support for picture'),
+    'version' => VERSION,
+    'js' => array(
+      drupal_get_path('module', 'picture') . '/picture.js' => array(
+        'type' => 'file',
+        'weight' => -10,
+        'group' => JS_DEFAULT,
+        'scope' => variable_get('picture_js_scope', 'footer'),
+        'need_jquery' => FALSE,
+        'async' => TRUE,
+      ),
+    ),
+  );
+  return $libraries;
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * Lets CTools know which plugin APIs are implemented by picture module.
+ */
+function picture_ctools_plugin_directory($owner, $plugin_type) {
+  // Load the export_ui plugin.
+  if ($owner == 'ctools' && $plugin_type == 'export_ui') {
+    return 'ctools/plugins/export_ui';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function picture_theme() {
+  return array(
+    'picture' => array(
+      'variables' => array(
+        'style_name' => NULL,
+        'path' => NULL,
+        'uri' => NULL,
+        'width' => NULL,
+        'height' => NULL,
+        'alt' => '',
+        'title' => NULL,
+        'attributes' => array(),
+        'breakpoints' => array(),
+      ),
+    ),
+    'picture_formatter' => array(
+      'variables' => array(
+        'item' => NULL,
+        'path' => NULL,
+        'image_style' => NULL,
+        'breakpoints' => array(),
+      ),
+    ),
+    'picture_formatter_colorbox' => array(
+      'variables' => array(
+        'item' => NULL,
+        'path' => NULL,
+        'image_style' => NULL,
+        'breakpoints' => array(),
+        'colorbox_group' => array(),
+        'colorbox_image_style' => NULL,
+        'colorbox_group_id' => NULL,
+        'colorbox_caption' => NULL,
+      ),
+    ),
+    'picture_source' => array(
+      'variables' => array(
+        'srcset' => NULL,
+        'media' => NULL,
+        'mime_type' => NULL,
+        'sizes' => NULL,
+      ),
+    ),
+    'image_srcset' => array(
+      'variables' => array(
+        'uri' => NULL,
+        'data_uri' => NULL,
+        'width' => NULL,
+        'height' => NULL,
+        'alt' => '',
+        'title' => NULL,
+        'attributes' => array(),
+        'srcset' => array(),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function picture_field_formatter_info() {
+  $formatters = array(
+    'picture' => array(
+      'label' => t('Picture'),
+      'field types' => array('image'),
+      'settings' => array(
+        'picture_mapping' => '',
+        'fallback_image_style' => '',
+        'image_link' => '',
+        'colorbox_settings' => array(
+          'colorbox_group' => '',
+          'colorbox_gallery' => 'post',
+          'colorbox_gallery_custom' => '',
+          'colorbox_caption' => 'auto',
+          'colorbox_caption_custom' => '',
+          'colorbox_multivalue_index' => NULL,
+        ),
+      ),
+    ),
+  );
+
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function picture_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $options = picture_get_mapping_options();
+
+  if ($options) {
+    $element['picture_mapping'] = array(
+      '#title' => t('Picture mapping'),
+      '#type' => 'select',
+      '#default_value' => isset($settings['picture_mapping']) ? $settings['picture_mapping'] : '',
+      '#required' => TRUE,
+      '#options' => picture_get_mapping_options(),
+    );
+  }
+  // No picture mappings.
+  else {
+    $element['picture_mapping'] = array(
+      '#title' => t('Picture mapping'),
+      '#type' => 'item',
+      '#markup' => t(
+        'There are no picture groups defined. !create_link.',
+        array('!create_link' => l(t('Create a picture mapping'), 'admin/config/media/picture/add'))
+      )
+    );
+  }
+
+  $image_styles = image_style_options(FALSE);
+  $element['fallback_image_style'] = array(
+    '#title' => t('Fallback image style'),
+    '#type' => 'select',
+    '#default_value' => $settings['fallback_image_style'],
+    '#empty_option' => t('Automatic'),
+    '#options' => $image_styles + array(
+      PICTURE_EMPTY_IMAGE => t('Empty image'),
+      PICTURE_ORIGINAL_IMAGE => t('Original image'),
+    ),
+  );
+
+  $link_types = picture_link_types($instance);
+
+  $element['image_link'] = array(
+    '#title' => t('Link image to'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_link'],
+    '#empty_option' => t('Nothing'),
+    '#options' => $link_types,
+    '#attributes' => array(
+      'class' => array('picture-image-link'),
+    ),
+  );
+
+  if (module_exists('colorbox')) {
+    // Settings for the colorbox option.
+    $element['colorbox_settings'] = array(
+      '#type' => 'fieldset',
+      '#tree' => TRUE,
+      '#title' => t('Colorbox settings'),
+      '#collapsed' => FALSE,
+      '#collapsible' => TRUE,
+      '#states' => array(
+        'visible' => array(
+          ':input[name$="[settings][image_link]"].picture-image-link' => array('value' => 'colorbox'),
+        ),
+      ),
+    );
+
+    $element['colorbox_settings']['colorbox_group'] = array(
+      '#title' => t('Colorbox picture mapping'),
+      '#type' => 'select',
+      '#default_value' => $settings['colorbox_settings']['colorbox_group'],
+      '#required' => FALSE,
+      '#options' => picture_get_mapping_options(),
+    );
+
+    $gallery = array(
+      'post' => t('Per post gallery'),
+      'page' => t('Per page gallery'),
+      'field_post' => t('Per field in post gallery'),
+      'field_page' => t('Per field in page gallery'),
+      'custom' => t('Custom'),
+      'none' => t('No gallery'),
+    );
+    $element['colorbox_settings']['colorbox_gallery'] = array(
+      '#title' => t('Gallery (image grouping)'),
+      '#type' => 'select',
+      '#default_value' => $settings['colorbox_settings']['colorbox_gallery'],
+      '#options' => $gallery,
+      '#description' => t('How Colorbox should group the image galleries.'),
+      '#attributes' => array(
+        'class' => array('picture-colorbox-gallery'),
+      ),
+    );
+    $element['colorbox_settings']['colorbox_gallery_custom'] = array(
+      '#title' => t('Custom gallery'),
+      '#type' => 'textfield',
+      '#maxlength' => 32,
+      '#default_value' => $settings['colorbox_settings']['colorbox_gallery_custom'],
+      '#description' => t('All images on a page with the same gallery value (rel attribute) will be grouped together. It must only contain lowercase letters, numbers, hyphen and underscores.'),
+      '#element_validate' => array('colorbox_gallery_custom_validate'),
+      '#required' => FALSE,
+      '#states' => array(
+        'visible' => array(
+          ':input[name$="[settings][colorbox_settings][colorbox_gallery]"].picture-colorbox-gallery' => array('value' => 'custom'),
+        ),
+      ),
+    );
+
+    $caption = array(
+      'auto' => t('Automatic'),
+      'title' => t('Title text'),
+      'alt' => t('Alt text'),
+      'node_title' => t('Content title'),
+      'custom' => t('Custom (with tokens)'),
+      'none' => t('None'),
+    );
+    $element['colorbox_settings']['colorbox_caption'] = array(
+      '#title' => t('Caption'),
+      '#type' => 'select',
+      '#default_value' => $settings['colorbox_settings']['colorbox_caption'],
+      '#options' => $caption,
+      '#description' => t('Automatic will use the first none empty value of the title, the alt text and the content title.'),
+      '#attributes' => array(
+        'class' => array('picture-colorbox-caption'),
+      ),
+    );
+    $element['colorbox_settings']['colorbox_caption_custom'] = array(
+      '#title' => t('Custom caption'),
+      '#type' => 'textfield',
+      '#default_value' => $settings['colorbox_settings']['colorbox_caption_custom'],
+      '#states' => array(
+        'visible' => array(
+          ':input[name$="[settings][colorbox_settings][colorbox_caption]"].picture-colorbox-caption' => array('value' => 'custom'),
+        ),
+      ),
+    );
+
+    // Allow users to hide or set a custom recursion limit.
+    // The module token_tweaks sets a global recursion limit that can not be bypassed.
+    if (module_exists('token') && $recursion_limit = min(variable_get('token_tree_recursion_limit', 3), variable_get('colorbox_token_recursion_limit', 3))) {
+      $element['colorbox_settings']['colorbox_token'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Replacement patterns'),
+        '#theme' => 'token_tree',
+        '#token_types' => array($instance['entity_type'], 'file'),
+        '#recursion_limit' => $recursion_limit,
+        '#dialog' => TRUE,
+        '#states' => array(
+          'visible' => array(
+            ':input[name$="[settings][colorbox_settings][colorbox_caption]"].picture-colorbox-caption' => array('value' => 'custom'),
+          ),
+        ),
+      );
+    }
+    else {
+      $element['colorbox_settings']['colorbox_token'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Replacement patterns'),
+        '#description' => '<strong class="error">' . t('For token support the <a href="@token_url">token module</a> must be installed.', array('@token_url' => 'http://drupal.org/project/token')) . '</strong>',
+        '#states' => array(
+          'visible' => array(
+            ':input[name$="[settings][colorbox_settings][colorbox_caption]"].picture-colorbox-caption' => array('value' => 'custom'),
+          ),
+        ),
+      );
+    }
+  }
+
+  return $element;
+}
+
+/**
+ * Returns a list of picture mappings for use in a select list.
+ */
+function picture_get_mapping_options() {
+  $picture_mapping_options = array();
+  $picture_mappings = picture_mapping_load_all();
+  if ($picture_mappings && !empty($picture_mappings)) {
+    foreach ($picture_mappings as $picture_mapping) {
+      // Exclude old mappings
+      if ($picture_mapping instanceof PictureMapping && (!isset($picture_mapping->disabled) || !$picture_mapping->disabled) && $picture_mapping->hasMappings()) {
+        $picture_mapping_options[$picture_mapping->getMachineName()] = $picture_mapping->label();
+      }
+    }
+  }
+  return $picture_mapping_options;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function picture_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = array();
+
+  $picture_mapping = picture_mapping_load($settings['picture_mapping']);
+  if ($picture_mapping) {
+    $summary[] = t('Picture mapping: @picture_mapping', array('@picture_mapping' => $picture_mapping->label()));
+    $image_styles = image_style_options(FALSE);
+    unset($image_styles['']);
+    if (isset($image_styles[$settings['fallback_image_style']])) {
+      $summary[] = t('Fallback Image style: @style', array('@style' => $image_styles[$settings['fallback_image_style']]));
+    }
+    else {
+      $summary[] = t('Automatic fallback');
+    }
+
+    $link_types = picture_link_types($instance);
+    // Display this setting only if image is linked.
+    if (isset($link_types[$settings['image_link']])) {
+      $summary[] = filter_xss_admin($link_types[$settings['image_link']]);
+    }
+  }
+  else {
+    $summary[] = t('Select a responsive image mapping.');
+  }
+
+
+  // Display the settings for the colorbox if chosen.
+  if ($settings['image_link'] == 'colorbox') {
+    $summary[] = t('Colorbox Group: @setting', array('@setting' => $settings['colorbox_settings']['colorbox_group']));
+    $gallery = array(
+      'post' => t('Per post gallery'),
+      'page' => t('Per page gallery'),
+      'field_post' => t('Per field in post gallery'),
+      'field_page' => t('Per field in page gallery'),
+      'custom' => t('Custom'),
+      'none' => t('No gallery'),
+    );
+    $summary[] = t('Colorbox Gallery: @setting', array('@setting' => $gallery[$settings['colorbox_settings']['colorbox_gallery']]));
+    if ($settings['colorbox_settings']['colorbox_gallery'] == 'custom') {
+      $summary[] = '&#8594; ' . t('Colorbox Gallery Custom: @setting', array('@setting' => $settings['colorbox_settings']['colorbox_gallery_custom']));
+    }
+    $caption = array(
+      'auto' => t('Automatic'),
+      'title' => t('Title text'),
+      'alt' => t('Alt text'),
+      'node_title' => t('Content title'),
+      'custom' => t('Custom (with tokens)'),
+      'none' => t('None'),
+    );
+    $summary[] = t('Colorbox Caption: @setting', array('@setting' => $caption[$settings['colorbox_settings']['colorbox_caption']]));
+    if ($settings['colorbox_settings']['colorbox_caption'] == 'custom') {
+      $summary[] = '&#8594; ' . t('Colorbox Caption Custom: @setting', array('@setting' => $settings['colorbox_settings']['colorbox_caption_custom']));
+    }
+  }
+
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function picture_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $settings = $display['settings'];
+  // Check if the formatter involves a link.
+  $image_link = $display['settings']['image_link'];
+  if ($image_link == 'content') {
+    $uri = entity_uri($entity_type, $entity);
+  }
+  elseif ($image_link == 'file') {
+    $link_file = TRUE;
+  }
+  elseif ($image_link) {
+    if (isset($entity->$image_link)) {
+      // Support for field translations.
+      $language = field_language($entity_type, $entity, $field['field_name']);
+      $link_field = $entity->$image_link;
+
+      if (isset($link_field[$language])) {
+        $link_values = $link_field[$language];
+      }
+    }
+  }
+  $fallback_image_style = $settings['fallback_image_style'];
+  // Support old display settings from 7.x-1.x.
+  $mapping_name = isset($display['settings']['picture_mapping']) && !empty($display['settings']['picture_mapping']) ? $display['settings']['picture_mapping'] : $display['settings']['picture_group'];
+  $picture_mapping = picture_mapping_load($mapping_name);
+  $breakpoint_styles = picture_get_mapping_breakpoints($picture_mapping, $fallback_image_style);
+
+  // Assume regular display.
+  $formatter = 'picture_formatter';
+  $colorbox_breakpoints = array();
+  $colorbox_fallback_image_style = '';
+
+  // Check for colorbox link.
+  if (module_exists('colorbox') && $display['settings']['image_link'] == 'colorbox') {
+    $formatter = 'picture_formatter_colorbox';
+    $mappings = picture_mapping_load($display['settings']['colorbox_settings']['colorbox_group']);
+    $colorbox_breakpoints = picture_get_mapping_breakpoints($mappings, $colorbox_fallback_image_style);
+  }
+
+  foreach ($items as $delta => $item) {
+    if (isset($link_file)) {
+      $uri = array(
+        'path' => file_create_url($item['uri']),
+        'options' => array(),
+      );
+    }
+    // Handle multiple link with image values.
+    if (isset($link_values)) {
+      if (isset($link_values[$delta]['url'])) {
+        $uri = array(
+          'path' => $link_values[$delta]['url'],
+          'options' => array('attributes' => $link_values[$delta]['attributes']),
+        );
+        // Handle query fragment if there is any.
+        if (!empty($link_values[$delta]['query'])) {
+          $uri['options']['query'] = $link_values[$delta]['query'];
+        }
+      }
+      // If there are more image values than link values unset the link.
+      else {
+        unset($uri);
+      }
+    }
+    $element[$delta] = array(
+      '#theme' => $formatter,
+      '#attached' => array('library' => array(
+        array('picture', 'picturefill_head'),
+        array('picture', 'picturefill'),
+        array('picture', 'picture.ajax'),
+      )),
+      '#item' => $item,
+      '#image_style' => $fallback_image_style,
+      '#breakpoints' => $breakpoint_styles,
+      '#path' => isset($uri) ? $uri : '',
+      '#colorbox_group' => $colorbox_breakpoints,
+      '#colorbox_image_style' => $colorbox_fallback_image_style,
+    );
+
+    // Add css and js for colorbox.
+    if ($formatter == 'picture_formatter_colorbox') {
+      $element[$delta]['#attached']['css'][drupal_get_path('module', 'picture') . '/picture_colorbox.css'] = array('type' => 'file');
+      $element[$delta]['#attached']['js'][drupal_get_path('module', 'picture') . '/picture_colorbox.js'] = array('type' => 'file');
+      if (!variable_get('colorbox_inline', 0)) {
+        $element[$delta]['#attached']['js'][drupal_get_path('module', 'colorbox') . '/js/colorbox_inline.js'] = array('type' => 'file');
+      }
+
+      $colorbox_settings = $display['settings']['colorbox_settings'];
+
+      // Add the group ID.
+      list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+      $entity_id = !empty($id) ? $entity_type . '-' . $id : 'entity-id';
+      // If this is a file entity field check for the referencing entity to do
+      // the proper grouping.
+      if (isset($entity->referencing_entity) && isset($entity->referencing_field)) {
+        // Because we don't have the entity type we use some "magic" to get a
+        // unique entity identifier.
+        $entity_id = spl_object_hash($entity->referencing_entity);
+        $colorbox_group_field = $entity->referencing_field;
+      }
+      else {
+        $colorbox_group_field = $field['field_name'];
+      }
+      switch ($colorbox_settings['colorbox_gallery']) {
+        case 'post':
+          $gallery_id = 'gallery-' . $entity_id;
+          break;
+        case 'page':
+          $gallery_id = 'gallery-all';
+          break;
+        case 'field_post':
+          $gallery_id = 'gallery-' . $entity_id . '-' . $colorbox_group_field;
+          break;
+        case 'field_page':
+          $gallery_id = 'gallery-' . $colorbox_group_field;
+          break;
+        case 'custom':
+          $gallery_id = $colorbox_settings['colorbox_gallery_custom'];
+          break;
+        default:
+          $gallery_id = '';
+      }
+      $element[$delta]['#colorbox_group_id'] = $gallery_id;
+
+      // Add the caption.
+      $entity_title = entity_label($entity_type, $entity);
+
+      switch ($colorbox_settings['colorbox_caption']) {
+        case 'auto':
+          // If the title is empty use alt or the entity title in that order.
+          if (!empty($item['title'])) {
+            $caption = $item['title'];
+          }
+          elseif (!empty($item['alt'])) {
+            $caption = $item['alt'];
+          }
+          elseif (!empty($entity_title)) {
+            $caption = $entity_title;
+          }
+          else {
+            $caption = '';
+          }
+          break;
+        case 'title':
+          $caption = $item['title'];
+          break;
+        case 'alt':
+          $caption = $item['alt'];
+          break;
+        case 'node_title':
+          $caption = $entity_title;
+          break;
+        case 'custom':
+          $caption = token_replace($colorbox_settings['colorbox_caption_custom'], array($entity_type => $entity, 'file' => (object) $item), array('clear' => TRUE));
+          break;
+        default:
+          $caption = '';
+      }
+
+      // Shorten the caption for the example styles or when caption shortening
+      // is active.
+      $colorbox_style = variable_get('colorbox_style', 'default');
+      $trim_length = variable_get('colorbox_caption_trim_length', 75);
+      if (((strpos($colorbox_style, 'colorbox/example') !== FALSE) || variable_get('colorbox_caption_trim', 0)) && (drupal_strlen($caption) > $trim_length)) {
+        $caption = drupal_substr($caption, 0, $trim_length - 5) . '...';
+      }
+
+      $element[$delta]['#colorbox_caption'] = $caption;
+    }
+  }
+  return $element;
+}
+
+/**
+ * Theme picture formatter.
+ */
+function theme_picture_formatter($variables) {
+  if (!isset($variables['breakpoints']) || empty($variables['breakpoints'])) {
+    $image_formatter = array(
+      '#theme' => 'image_formatter',
+      '#item' => $variables['item'],
+      '#image_style' => $variables['image_style'],
+      '#path' => $variables['path']
+    );
+    return drupal_render($image_formatter);
+  }
+  $item = $variables['item'];
+
+  $responsive_image = array(
+    '#theme' => 'picture',
+    '#width' => isset($item['width']) ? $item['width'] : NULL,
+    '#height' => isset($item['height']) ? $item['height'] : NULL,
+    '#style_name' => $variables['image_style'],
+    '#breakpoints' => $variables['breakpoints'],
+    '#uri' => $item['uri'],
+    '#alt' => $item['alt'],
+  );
+  if (isset($item['title']) && drupal_strlen($item['title']) != 0) {
+    $responsive_image['#title'] = $item['title'];
+  }
+  if (isset($variables['path']['path'])) {
+    $path = $variables['path']['path'];
+    $options = isset($variables['path']['options']) ? $variables['path']['options'] : array();
+    $options['html'] = TRUE;
+    return l(drupal_render($responsive_image), $path, $options);
+  }
+
+  return drupal_render($responsive_image);
+}
+
+/**
+ * Theme function to add support for colorbox.
+ */
+function theme_picture_formatter_colorbox($variables) {
+  if (!isset($variables['breakpoints']) || empty($variables['breakpoints'])) {
+    return theme('image_formatter', $variables);
+  }
+
+  $item = $variables['item'];
+
+  // Do not output an empty 'title' attribute.
+  if (isset($item['title']) && drupal_strlen($item['title']) == 0) {
+    unset($item['title']);
+  }
+
+  $item['style_name'] = $variables['image_style'];
+  $item['breakpoints'] = $variables['breakpoints'];
+
+  if (!isset($item['path']) && isset($variables['uri'])) {
+    $item['path'] = $variables['uri'];
+  }
+  $output = theme('picture', $item);
+
+  // If an error happened skip further processing.
+  if (empty($output)) {
+    return $output;
+  }
+
+  if (isset($variables['colorbox_group'])) {
+    $item['breakpoints'] = $variables['colorbox_group'];
+    $item['style_name'] = $variables['colorbox_image_style'];
+    $id = 'picture-colorbox-' . user_password();
+    $colorbox = '<div style="display: none;"><div id="' . $id . '" class="picture-colorbox-container">' . theme('picture', $item) . '</div></div>';
+
+    $options = array(
+      'attributes' => array('class' => array('colorbox-inline')),
+      'query' => array('maxWidth' => '80%', 'maxHeight' => '80%', 'inline' => 'true'),
+      'fragment' => $id,
+      'html' => TRUE,
+    );
+
+    if (!empty($variables['colorbox_group_id'])) {
+      $options['attributes']['rel'] = $variables['colorbox_group_id'];
+    }
+    if (!empty($variables['colorbox_caption'])) {
+      $options['query']['title'] = $variables['colorbox_caption'];
+    }
+
+    // Do not load picture automatically.
+    $colorbox = str_replace('span data-picture=""', 'span data-picture-lazy="lazy"', $colorbox);
+    $output = l($output, current_path(), $options) . $colorbox;
+  }
+  return $output;
+}
+
+/**
+ * Returns HTML for a picture.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - uri: Either the path of the image file (relative to base_path()) or a
+ *     full URL.
+ *   - width: The width of the image (if known).
+ *   - height: The height of the image (if known).
+ *   - alt: The alternative text for text-based browsers.
+ *   - breakpoints: An array containing breakpoints.
+ *   - attributes: An array containing attributes.
+ *
+ * @ingroup themeable
+ */
+function theme_picture($variables) {
+  // Make sure that width and height are proper values
+  // If they exists we'll output them
+  // @see http://www.w3.org/community/respimg/2012/06/18/florians-compromise/
+  if (isset($variables['width']) && empty($variables['width'])) {
+    unset($variables['width']);
+    unset($variables['height']);
+  }
+  elseif (isset($variables['height']) && empty($variables['height'])) {
+    unset($variables['width']);
+    unset($variables['height']);
+  }
+  if (isset($variables['metadata']['width']) && isset($variables['metadata']['height'])) {
+    $variables['width'] = $variables['metadata']['width'];
+    $variables['height'] = $variables['metadata']['height'];
+  }
+
+  $sources = array();
+  $output = array();
+  if (($image = image_load($variables['uri'])) === FALSE) {
+    watchdog('Picture', 'Unable to load image: %image', array('%image' => $variables['uri']));
+    // If the image couldn't be loaded return nothing.
+    return NULL;
+  }
+
+  // All breakpoints and multipliers.
+  foreach ($variables['breakpoints'] as $breakpoint_name => $multipliers) {
+    $breakpoint = breakpoints_breakpoint_load_by_fullkey($breakpoint_name);
+    if ($breakpoint) {
+      $sizes = array();
+      $srcset = array();
+      $derivative_mime_types = array();
+      foreach ($multipliers as $multiplier => $mapping_definition) {
+        switch ($mapping_definition['mapping_type']) {
+          case 'sizes':
+            foreach (array_filter($mapping_definition['sizes_image_styles']) as $image_style_name) {
+              $dimensions = array(
+                'width' => $image->info['width'],
+                'height' => $image->info['height'],
+              );
+              picture_get_image_dimensions($image_style_name, $dimensions);
+              // Get mime type.
+              //$derivative_mime_type = $mime_type;
+              //$image_style->transformMimeType($derivative_mime_type);
+              //$derivative_mime_types[] = $derivative_mime_type;
+
+              $srcset[] = _picture_image_style_url($image_style_name, $variables['uri']) . ' ' . $dimensions['width'] . 'w';
+              $sizes = array_merge(explode(',', $mapping_definition['sizes']), $sizes);
+            }
+            break;
+          case 'image_style':
+            // Get mime type (not implemented in Drupal 7.
+            // $derivative_mime_type = $mime_type;
+            // $image_style->transformMimeType($derivative_mime_type);
+            // $derivative_mime_types[] = $derivative_mime_type;
+            $srcset[] = _picture_image_style_url($mapping_definition['image_style'], $variables['uri']) . ' ' . $multiplier;
+            break;
+        }
+      }
+
+      $sources[] = array(
+        '#theme' => 'picture_source',
+        '#srcset' => implode(', ', array_unique($srcset)),
+        '#media' => $breakpoint->breakpoint,
+        '#sizes' => implode(',', array_unique($sizes)),
+      );
+    }
+  }
+  $attributes = array();
+  foreach (array('alt', 'title', 'attributes') as $key) {
+    $field = sprintf('field_file_image_%s_text', $key);
+    if (isset($variables[$key]) && !empty($variables[$key])) {
+      if ($key == 'attributes') {
+        $attributes += $variables[$key];
+      }
+      else {
+        $attributes[$key] = $variables[$key];
+      }
+    }
+    elseif (isset($variables[$field]) && is_array($variables[$field]) && isset($variables[$field]['und'][0]['safe_value'])) {
+      if ($key == 'attributes') {
+        $attributes += $variables[$field]['und'][0]['safe_value'];
+      }
+      else {
+        $attributes[$key] = $variables[$field]['und'][0]['safe_value'];
+      }
+    }
+  }
+  if (!empty($sources)) {
+    $output[] = '<picture ' . drupal_attributes(array_diff_key($attributes, array('alt' => ''))) . '>';
+    $output[] = '<!--[if IE 9]><video style="display: none;"><![endif]-->';
+    $output = array_merge($output, array_map('drupal_render', $sources));
+    $output[] = '<!--[if IE 9]></video><![endif]-->';
+
+    // Fallback image.
+    if ($variables['style_name'] !== PICTURE_EMPTY_IMAGE) {
+      $dimensions = array(
+        'width' => $image->info['width'],
+        'height' => $image->info['height'],
+      );
+      picture_get_image_dimensions($variables['style_name'], $dimensions);
+      $fallback_image = array(
+        '#theme' => 'image_srcset',
+        '#srcset' => array(
+          array(
+            'uri' => _picture_image_style_url($variables['style_name'], $variables['uri']),
+            'width' => $dimensions['width'] . 'w',
+          ),
+        ),
+      );
+    }
+    else {
+      $fallback_image = array(
+        '#theme' => 'image_srcset',
+        '#srcset' => array(
+          array(
+            'data_uri' => _picture_image_style_url($variables['style_name'], $variables['uri']),
+            'width' => '1w',
+          ),
+        ),
+      );
+    }
+    $fallback_image += array(
+      '#alt' => isset($attributes['alt']) ? $attributes['alt'] : '',
+      '#title' => isset($attributes['title']) ? $attributes['title'] : '',
+      '#attributes' => array_diff_key($attributes, array('alt' => '', 'title' => '')),
+    );
+    $output[] = drupal_render($fallback_image);
+
+    $output[] = '</picture>';
+
+    return implode("\n", $output);
+  }
+}
+
+/**
+ * Returns HTML for an image.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - path: Either the path of the image file (relative to base_path()) or a
+ *     full URL.
+ *   - srcset: Array of multiple URI's and sizes/multipliers.
+ *   - width: The width of the image (if known).
+ *   - height: The height of the image (if known).
+ *   - alt: The alternative text for text-based browsers. HTML 4 and XHTML 1.0
+ *     always require an alt attribute. The HTML 5 draft allows the alt
+ *     attribute to be omitted in some cases. Therefore, this variable defaults
+ *     to an empty string, but can be set to NULL for the attribute to be
+ *     omitted. Usually, neither omission nor an empty string satisfies
+ *     accessibility requirements, so it is strongly encouraged for code
+ *     calling theme('image') to pass a meaningful value for this variable.
+ *     - http://www.w3.org/TR/REC-html40/struct/objects.html#h-13.8
+ *     - http://www.w3.org/TR/xhtml1/dtds.html
+ *     - http://dev.w3.org/html5/spec/Overview.html#alt
+ *   - title: The title text is displayed when the image is hovered in some
+ *     popular browsers.
+ *   - attributes: Associative array of attributes to be placed in the img tag.
+ */
+function theme_image_srcset($variables) {
+  $attributes = isset($variables['attributes']) ? $variables['attributes'] : array();
+  if (isset($variables['path']) && !empty($variables['path'])) {
+    $attributes['src'] = file_create_url($variables['path']);
+  }
+  if (isset($variables['srcset']) && !empty($variables['srcset'])) {
+    $srcsets = array();
+    foreach ($variables['srcset'] as $srcset) {
+      // URI is mandatory.
+      if (isset($srcset['uri']) && !empty($srcset['uri'])) {
+        $new_source = file_create_url($srcset['uri']);
+        if (isset($srcset['width']) && !empty($srcset['width'])) {
+          $new_source .= ' ' . $srcset['width'];
+        }
+        elseif (isset($srcset['multiplier']) && !empty($srcset['multiplier'])) {
+          $new_source .= ' ' . $srcset['multiplier'];
+        }
+        $srcsets[] = $new_source;
+      }
+      elseif (isset($srcset['data_uri']) && !empty($srcset['data_uri'])) {
+        $new_source = $srcset['data_uri'];
+        if (isset($srcset['width']) && !empty($srcset['width'])) {
+          $new_source .= ' ' . $srcset['width'];
+        }
+        elseif (isset($srcset['multiplier']) && !empty($srcset['multiplier'])) {
+          $new_source .= ' ' . $srcset['multiplier'];
+        }
+        $srcsets[] = $new_source;
+      }
+    }
+    $attributes['srcset'] = implode(', ', $srcsets);
+  }
+  foreach (array('width', 'height', 'alt', 'title') as $key) {
+
+    if (isset($variables[$key])) {
+      $attributes[$key] = $variables[$key];
+    }
+  }
+  return '<img' . drupal_attributes($attributes) . ' />';
+}
+
+/**
+ * Returns HTML for a source tag.
+ *
+ * @param type $variables
+ *   An associative array containing:
+ *   - media: The media query to use.
+ *   - src: Either the path of the image file (relative to base_path()) or a
+ *     full URL.
+ *   - dimensions: The width and height of the image (if known).
+ *
+ * @ingroup themeable
+ */
+function theme_picture_source($variables) {
+  $attributes = array(
+    'srcset' => $variables['srcset'],
+  );
+
+  if (isset($variables['media']) && !empty($variables['media'])) {
+    $attributes['media'] = $variables['media'];
+  }
+
+  if (isset($variables['mime_type']) && !empty($variables['mime_type'])) {
+    $attributes['type'] = $variables['mime_type'];
+  }
+  if (isset($variables['sizes']) && !empty($variables['sizes'])) {
+    $attributes['sizes'] = $variables['sizes'];
+  }
+  return '<source' . drupal_attributes($attributes) . ' />';
+}
+
+/**
+ * Determines the dimensions of an image.
+ * @param $image_style_name
+ *   The name of the style to be used to alter the original image.
+ * @param $dimensions
+ *   Dimensions to be modified - an array with components width and height, in
+ *   pixels.
+ */
+function picture_get_image_dimensions($image_style_name, &$dimensions) {
+  if ($image_style_name == PICTURE_EMPTY_IMAGE) {
+    $dimensions = array(
+      'width' => 1,
+      'height' => 1,
+    );
+  }
+  elseif ($image_style_name == PICTURE_ORIGINAL_IMAGE) {
+    // NOOP.
+  }
+  else {
+    image_style_transform_dimensions($image_style_name, $dimensions);
+  }
+
+  return $dimensions;
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function picture_filter_info() {
+  $filters = array();
+  $filters['picture'] = array(
+    'title' => t('Make images responsive with the picture module'),
+    'description' => t('Replace img tags with markup that contains media width breakpoints. The appropriate image file size will be chosen.'),
+    'process callback' => '_picture_filter_process',
+    'tips callback' => '_picture_filter_tips',
+    'type' => 'FILTER_TYPE_TRANSFORM_REVERSIBLE',
+  );
+
+  return $filters;
+}
+
+/**
+ * Process callback for inline image filter.
+ */
+function _picture_filter_process($text, $filter) {
+
+  // Find all img tags with a data-picture-mapping attribute.
+  preg_match_all('/<img.*?data-picture-mapping=".*?>/i', $text, $images1);
+  preg_match_all('/<img.*?data-picture-group=".*?>/i', $text, $images2);
+  $images = array_merge($images1[0], $images2[0]);
+  if (!empty($images)) {
+    foreach ($images as $image) {
+      // Create the render array expected by theme_picture_formatter.
+      $image_render_array = _picture_filter_prepare_image($image);
+      if (!$image_render_array) {
+        continue;
+      }
+
+      // Get the responsive markup for this image.
+      $new_markup = drupal_render($image_render_array);
+
+      // Replace the original img tag with the responsive markup.
+      $text = str_replace($image, $new_markup, $text);
+    }
+  }
+  return $text;
+}
+
+/**
+ * Prepares a Render Array for theme_picture_formatter().
+ * It is similar to picture_field_formatter_view()
+ * with modifications for inline images.
+ *
+ * @param $image
+ *   An img tag
+ * @see picture_field_formatter_view()
+ */
+function _picture_filter_prepare_image($image) {
+  // Make sure the closing tag is right.
+  $image = str_replace('/>', '>', $image);
+  $image = str_replace('>', ' />', $image);
+  $image = htmlspecialchars($image);
+
+  // Parse the tag as xml.
+  $xml = simplexml_load_string('<image>' . html_entity_decode($image, ENT_QUOTES, "utf-8") . '</image>');
+  if (isset($xml->img[0]) && is_object($xml->img[0])) {
+    $attributes = array();
+    foreach ($xml->img[0]->attributes() as $a => $b) {
+      $attributes[$a] = (string) $b;
+    }
+  }
+
+  $fallback_image_style = '';
+  $mapping_id = isset($attributes['data-picture-mapping']) ? $attributes['data-picture-mapping'] : $attributes['data-picture-group'];
+  $mappings = picture_mapping_load($mapping_id);
+  $breakpoint_styles = picture_get_mapping_breakpoints($mappings, $fallback_image_style);
+
+  // Make sure we have a src attribute.
+  if (!isset($attributes['src'])) {
+    return FALSE;
+  }
+  $src = $attributes['src'];
+  unset($attributes['src']);
+  $alt = isset($attributes['alt']) ? $attributes['alt'] : '';
+  unset($attributes['alt']);
+  $title = isset($attributes['title']) ? $attributes['title'] : '';
+  unset($attributes['title']);
+
+  // Make sure we have map src to uri.
+  $uri = picture_image_uri($src);
+  if (!$uri) {
+    return FALSE;
+  }
+
+  $image_info = image_get_info($uri);
+  if (!$image_info) {
+    // It's not an image.
+    return FALSE;
+  }
+  $picture_mappings = variable_get('picture_ckeditor_mappings', array());
+  $image_render_array = array(
+    '#theme' => 'picture',
+    '#style_name' => $picture_mappings[$mapping_id]['fallback'],
+    '#uri' => $uri,
+    '#width' => $image_info['width'],
+    '#height' => $image_info['height'],
+    '#alt' => $alt,
+    '#title' => $title,
+    '#attributes' => array(
+      'data-picture-mapping' => $mapping_id,
+    ) + $attributes,
+    '#breakpoints' => $breakpoint_styles,
+  );
+  return $image_render_array;
+}
+
+/**
+ * Implements callback_filter_tips().
+ */
+function _picture_filter_tips($filter, $format, $long = FALSE) {
+  return t('Images with a data-picture-mapping attribute will be responsive, with a file size appropriate for the browser width.');
+}
+
+/**
+ * Implements hook_page_build().
+ *
+ * Add the image processing javascript to every page. This allows these scripts
+ * to get included in aggregation, which is probably good since there will be
+ * pictures needing this javascript on most pages. The library does not get
+ * added twice, even if it's attached to multiple fields that are also being
+ * displayed with responsive images. Maybe this should check that the
+ * page is not an admin theme page?
+ */
+function picture_page_build(&$page) {
+  drupal_add_library('picture', 'picturefill_head', TRUE);
+  drupal_add_library('picture', 'picturefill', TRUE);
+  drupal_add_library('picture', 'picture.ajax', TRUE);
+
+  // Integrate with the WYSIWYG module, and the CKEditor module.
+  $picture_mappings = picture_get_mapping_options();
+  $ckeditor_mappings = variable_get('picture_ckeditor_mappings', array());
+  $mappings = array();
+  // CKEditor library expects an array of options formatted as
+  // ['Display name', 'machine_name'].
+  foreach ($ckeditor_mappings as $machine_name => $parameters) {
+    if (array_key_exists($machine_name, $picture_mappings)) {
+      if ($parameters['enabled'] == 1) {
+        $mappings[] = array($picture_mappings[$machine_name], $machine_name);
+      }
+    }
+  }
+  if (!empty($mappings)) {
+    $mappings[] = array('Not Set', 'not_set');
+    drupal_add_js(array(
+      'picture' => array(
+        'mappings' => $mappings,
+        'label' => variable_get('picture_ckeditor_label', 'Image size (required)'),
+        ),
+      ), 'setting');
+  }
+}
+
+/**
+ * Helper function to figure out the uri of an image given the
+ * image src.
+ *
+ * @param
+ *   Image src starting with http://, https://, or root relative /.
+ *   It must point to a local file.
+ */
+function picture_image_uri($src) {
+  global $base_path;
+
+  $uri = '';
+  // Prepare the src by removing http:// or https://.
+  $src = parse_url($src, PHP_URL_PATH);
+  // Remove leading or trailing slashes.
+  $src = trim($src, '/');
+
+  // List all visible stream wrappers. Make sure they're also local since the
+  // getDirectoryPath method exists only for classes that extend
+  // DrupalLocalStreamWrapper.
+  $local_visible_stream_wrappers = array_intersect_key(file_get_stream_wrappers(STREAM_WRAPPERS_LOCAL), file_get_stream_wrappers(STREAM_WRAPPERS_VISIBLE));
+  $needles = array();
+  $matches = array();
+  foreach ($local_visible_stream_wrappers as $scheme => $data) {
+    $class = file_stream_wrapper_get_class($scheme);
+    $stream_wrapper = new $class();
+    // Trim leading or trailing slashes since the Directory could be root
+    // relative.
+    $needles[$scheme] = trim($base_path . $stream_wrapper->getDirectoryPath(), '/');
+
+    // Check whether the file stream directory is at the beginning of
+    // the image src. Use === since strpos could return false.
+    if (!empty($needles[$scheme]) && strpos($src, $needles[$scheme]) === 0) {
+      $matches[$scheme] = $needles[$scheme];
+    }
+  }
+
+  // No file stream wrapper is starting with the image src.
+  // So it's not a public file.
+  if (empty($matches)) {
+    // Check for managed/private file with relative path like 'system/files/...'.
+    $src_exploded = explode ('/', $src);
+    if ($src_exploded[0] == 'system' && $src_exploded[1] == 'files') {
+      // Managed/private file recognized.
+      // Check for image style derivatives.
+      if ($src_exploded[2] == 'styles') {
+        // Image style recognized.
+        $unwanted_part = 'system/files/styles/' . $src_exploded[3] . '/private/';
+        $uri = str_replace($unwanted_part, 'private://', $src);
+        $uri = file_stream_wrapper_uri_normalize($uri);
+        return urldecode($uri);
+      } else {
+        // No image style recognized; must be an original.
+        $unwanted_part = 'system/files/';
+        $uri = str_replace($unwanted_part, 'private://', $src);
+        $uri = file_stream_wrapper_uri_normalize($uri);
+        return urldecode($uri);
+      }
+    // It's not a managed/private file.
+    } else {
+      // Can't figure out the Drupal uri.
+      return FALSE;
+    }
+  }
+
+  // If one file scheme directory is a subdirectory of another file
+  // scheme directory, choose the longer one. This issue is possible with
+  // the following scenario:
+  // public file dir: /sites/default/files/
+  // private file dir: /sites/default/files/private/
+  // image src: /sites/default/files/private/the-image.jpg
+  // In this example, the intended scheme would be 'private'.
+
+  if (empty($matches)) {
+    // Can't figure out the Drupal uri.
+    return FALSE;
+  }
+  // Find the length of each matching directory path.
+  $lengths = array_map('strlen', $matches);
+
+  // Determine the key of the longest one.
+  $the_scheme = array_search(max($lengths), $lengths);
+
+  // Construct the Drupal uri.
+  $uri = $the_scheme . '://' . str_replace($matches[$the_scheme], '', $src);
+  $uri = file_stream_wrapper_uri_normalize($uri);
+
+  return urldecode($uri);
+}
+
+/**
+ * Implements hook_wysiwyg_plugin() to modify the CKEditor image dialog for use
+ * with the picture module.
+ */
+function picture_wysiwyg_plugin($editor, $version) {
+  if ($editor == 'ckeditor') {
+    return array('picture_ckeditor' => array(
+      'path' => drupal_get_path('module', 'picture') .'/ckeditor/plugins/',
+      'load' => TRUE,
+      'extensions' => array('picture_ckeditor' => t('Responsive images with the Picture Module')),
+      'url' => 'http://drupal.org/projects/picture',
+    ));
+  }
+}
+
+/**
+ * Implements hook_ckeditor_plugin() to modify the CKEditor image dialog for use
+ * with the picture module.
+ */
+function picture_ckeditor_plugin() {
+  return array(
+    'picture_ckeditor' => array(
+      // Name of the plugin used to write it.
+      'name' => 'picture_ckeditor',
+      // Description of the plugin - it would be displayed in the plugins management section of profile settings.
+      'desc' => t('Support responsive images with the Picture module.'),
+      // The full path to the CKEditor plugins directory, with the trailing slash.
+      'buttons' => FALSE,
+      'path' => drupal_get_path('module', 'picture') . '/ckeditor/plugins/',
+      'default' => 't',
+    )
+  );
+}
+
+/**
+ * Wrapper around image_style_url() so we can return an empty image.
+ */
+function _picture_image_style_url($style_name, $path) {
+  if ($style_name == PICTURE_EMPTY_IMAGE) {
+    return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  }
+  if ($style_name == PICTURE_ORIGINAL_IMAGE) {
+    return file_create_url($path);
+  }
+  return image_style_url($style_name, $path);
+}
+
+/**
+ * Implements hook_wysiwyg_editor_settings_alter().
+ */
+function picture_wysiwyg_editor_settings_alter(&$settings, $context) {
+  if ($context['profile']->editor == 'ckeditor') {
+    if (!isset($settings['extraAllowedContent'])) {
+      $settings['extraAllowedContent'] = array(
+        'img[src,title,alt,style,width,height,class,hspace,vspace,view_mode,format,fid,data-picture-mapping,data-picture-group,data-picture-align]',
+      );
+    }
+    else {
+      // @todo: try finding the img entry and add data- attributes if needed.
+    }
+  }
+}
+
+/**
+ * Returns a list with the image styles of a mapping configuration.
+ *
+ * @param object $mappings
+ *   The mapping configuration.
+ * @param string $fallback_image_style
+ *   Reference to access the evaluated fallback image style.
+ *
+ * @return array
+ *   List with the image styles of a mapping configuration.
+ *   The array has following structure:
+ *   array(
+ *     breakpoint_name => array(
+ *       multiplier => array(
+ *         mapping_type => _none|sizes|image_style,
+ *         image_style => image_style_name,
+ *         sizes => '(min-width: 700px) 700px, 100vw',
+ *         sizes_image_styles => array(
+ *           thumbnail => thumbnail,
+ *           medium => medium,
+ *           large => large,
+ *         ),
+ *       ),
+ *     ),
+ *   );
+ */
+function picture_get_mapping_breakpoints(PictureMapping $picture_mapping, &$fallback_image_style = NULL) {
+  $breakpoint_styles = array();
+  $image_styles = array();
+  foreach ($picture_mapping->getMappings() as $breakpoint_name => $multipliers) {
+    // Make sure there are multipliers.
+    if (!empty($multipliers)) {
+      $breakpoint = breakpoints_breakpoint_load_by_fullkey($breakpoint_name);
+      if ($breakpoint && $breakpoint->status) {
+        // Determine the enabled multipliers.
+        $multipliers = array_intersect_key($multipliers, $breakpoint->multipliers);
+        foreach ($multipliers as $multiplier => $mapping_definition) {
+          // Make sure the multiplier still exists.
+          if (!PictureMapping::isEmptyMappingDefinition($mapping_definition)) {
+            if ($mapping_definition['mapping_type'] == 'image_style') {
+              $image_styles[] = $mapping_definition['image_style'];
+            }
+            elseif ($mapping_definition['mapping_type'] == 'sizes') {
+              $mapping_definition['sizes_image_styles'] = array_filter($mapping_definition['sizes_image_styles']);
+              $image_styles = array_merge($image_styles, $mapping_definition['sizes_image_styles']);
+            }
+            if (!isset($breakpoint_styles[$breakpoint_name])) {
+              $breakpoint_styles[$breakpoint_name] = array();
+            }
+            $breakpoint_styles[$breakpoint_name][$multiplier] = $mapping_definition;
+          }
+        }
+      }
+    }
+  }
+
+  // Check if the user defined a custom fallback image style.
+  if (!$fallback_image_style) {
+    $fallback_image_style = end($image_styles);
+  }
+  return $breakpoint_styles;
+}
+
+/**
+ * Helper function to compute the list of possible link types.
+ */
+function picture_link_types($instance) {
+  $link_types = array(
+    'content' => t('Content'),
+    'file' => t('File'),
+  );
+
+  if (module_exists('colorbox')) {
+    $link_types['colorbox'] = t('Colorbox');
+  }
+
+  // If the link module is installed, also allow any link fields to be used.
+  foreach (field_info_fields() as $field_key => $field_info) {
+    if ($field_info['type'] == 'link_field') {
+      $field_instance = field_info_instance($instance['entity_type'], $field_info['field_name'], $instance['bundle']);
+      if ($field_instance) {
+        $link_types[$field_key] = "$field_instance[label] ($field_info[field_name])";
+      }
+    }
+  }
+  return $link_types;
+}
+
+function picture_mapping_object_factory($schema, $data) {
+  $mapping =  new PictureMapping();
+  $mapping->setValues($schema, $data);
+  return $mapping;
+}
+
+function picture_mapping_create($set_defaults) {
+  $schema = ctools_export_get_schema('picture_mapping');
+  $data = ctools_export_new_object('picture_mapping', $set_defaults);
+  return picture_mapping_object_factory($schema, $data);
+}
+
+function picture_mapping_export(PictureMapping $mapping, $indent) {
+  return $mapping->export($indent);
+}

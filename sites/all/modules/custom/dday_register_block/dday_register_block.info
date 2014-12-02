@@ -1,0 +1,4 @@
+name = Drupal Day register block
+description = A module that creates a block with link to register.
+package = Drupal Day
+core = 7.x
