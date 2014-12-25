@@ -21,8 +21,12 @@ function template_preprocess_flexslider_picture_list(&$vars) {
     $items = &$vars['items'];
 
     // Get the breakpoints based on the mapping.
-    $fallback_image_style = '';
+    $fallback_image_style = $optionset->fallback;
     $mappings = picture_mapping_load($optionset->mapping);
+    if (!$mappings) {
+      trigger_error("Unable to load picture mapping {$optionset->mapping}.", E_USER_ERROR);
+      return;
+    }
     $breakpoint_styles = picture_get_mapping_breakpoints($mappings, $fallback_image_style);
 
     // If colorbox is enabled build additional configuration.
@@ -34,12 +38,18 @@ function template_preprocess_flexslider_picture_list(&$vars) {
         drupal_add_js(drupal_get_path('module', 'colorbox') . '/js/colorbox_inline.js');
       }
 
-      $colorbox_fallback_image_style = '';
+      $colorbox_fallback_image_style = $optionset->options['colorboxFallbackImageStyle'];
       $mappings = picture_mapping_load($optionset->options['colorboxImageStyle']);
-      $colorbox_breakpoints = picture_get_mapping_breakpoints($mappings, $colorbox_fallback_image_style);
-      // Grouping ID for the colorbox gallery. Use more_entropy to ensure the
-      // php function works on every environment (cygwin).
-      $colorbox_group_id = uniqid('flexgroup', TRUE);
+      if (!$mappings) {
+        trigger_error("Unable to load picture mapping {$optionset->options['colorboxImageStyle']}.", E_USER_ERROR);
+        $optionset->options['colorboxEnabled'] = FALSE;
+      }
+      else {
+        $colorbox_breakpoints = picture_get_mapping_breakpoints($mappings, $colorbox_fallback_image_style);
+        // Grouping ID for the colorbox gallery. Use more_entropy to ensure the
+        // php function works on every environment (cygwin).
+        $colorbox_group_id = uniqid('flexgroup', TRUE);
+      }
     }
 
     // Prepare the item slides to be passed to render().
@@ -47,7 +57,7 @@ function template_preprocess_flexslider_picture_list(&$vars) {
       if (isset($item['item'])) {
         $item['slide'] = array(
           '#theme' => 'picture',
-          '#style_name' => $optionset->imagestyle_normal,
+          '#style_name' => $fallback_image_style,
           '#uri' => $item['item']['uri'],
           '#height' => $item['item']['height'],
           '#width' => $item['item']['width'],
@@ -61,7 +71,7 @@ function template_preprocess_flexslider_picture_list(&$vars) {
           $item['slide'] = array(
             '#theme' => 'picture_formatter_colorbox',
             '#item' => $item['item'],
-            '#image_style' => $optionset->imagestyle_normal,
+            '#image_style' => $fallback_image_style,
             '#path' => $item['item']['uri'],
             '#colorbox_image_style' => $colorbox_fallback_image_style,
             '#colorbox' => $colorbox_breakpoints,
@@ -74,7 +84,7 @@ function template_preprocess_flexslider_picture_list(&$vars) {
           );
         }
         if (!isset($item['thumb'])) {
-          $item['thumb'] = image_style_url($optionset->imagestyle_thumbnail, $item['item']['uri']);
+          $item['thumb'] = image_style_url($fallback_image_style, $item['item']['uri']);
         }
       }
     }

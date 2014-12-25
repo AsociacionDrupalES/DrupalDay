@@ -8,13 +8,27 @@
       init : function(editor)
       {
 
-          // This disables the browser resize handles since the width will now be set
-          // in the image dialog. This also prevents CKEditor from automatically adding
-          // pesky inline width and height styles, although these inline styles are
-          // still added when an image is dragged and dropped.
-          // Resize handles are also removed from tables as an unintended consequence.
-        CKEDITOR.config.disableObjectResizing = true;
+        // Used later to ensure the required features have been enabled in the
+        // Advanced Content Filter.
+        features = {
+          'imageSize': { 'requiredContent': 'img[data-picture-mapping]' },
+          'imageAlign': { 'requiredContent': 'img[data-picture-align]' }
+        };
 
+        // If we have image2, enable the more advanced functionality
+        if (CKEDITOR.config.plugins.indexOf('image2') != -1) {
+          // CKEditor's normal alignment will be removed below, we need to
+          // provide replacement classes based on Picture data
+          CKEDITOR.addCss('img[data-picture-align="right"] { float: right; }');
+          CKEDITOR.addCss('img[data-picture-align="left"] { float: left; }');
+          CKEDITOR.addCss('img[data-picture-align="center"] { display: block; margin-left: auto; margin-right: auto; }');
+          CKEDITOR.addCss('span[data-cke-display-name="image"] { display: block; }');
+        }
+
+        // Else, we need check if regular image is installed
+        else if (CKEDITOR.config.plugins.indexOf('image') != -1) {
+          CKEDITOR.config.disableObjectResizing = true;
+        }
 
         // When opening a dialog, a 'definition' is created for it. For
         // each editor instance the 'dialogDefinition' event is then
@@ -31,13 +45,88 @@
           var dialogDefinition = event.data.definition;
 
 
+          if (dialogName == 'image2') {
+            var infoTab = dialogDefinition.getContents('info');
+            // UpdatePreview is copied from ckeditor image plugin.
+            var updatePreview = function(dialog) {
+              // Don't load before onShow.
+              if (!dialog.originalElement || !dialog.preview) {
+                return 1;
+              }
+
+              // Read attributes and update imagePreview.
+              dialog.commitContent(PREVIEW, dialog.preview);
+              return 0;
+            };
+            // Add the select list for choosing the image width.
+            infoTab.add({
+              type: 'select',
+              id: 'imageSize',
+              label: Drupal.settings.picture.label,
+              items: Drupal.settings.picture.mappings,
+              'default': 'not_set',
+              requiredContent: features.imageSize.requiredContent,
+              setup: function(widget) {
+                mapping = widget.parts.image.getAttribute('data-picture-mapping');
+                this.setValue(mapping ? mapping : 'not_set');
+              },
+              // Create a custom data-picture-mapping attribute.
+              commit: function(widget) {
+                widget.parts.image.setAttribute('data-picture-mapping', this.getValue());
+              },
+              validate: function() {
+                if (this.getValue() == 'not_set') {
+                  var message = 'Please make a selection from ' + Drupal.settings.picture.label;
+                  alert(message);
+                  return false;
+                } else {
+                  return true;
+                }
+              }
+            }
+            );
+
+            // Alignment's inline styling should be deprecated in favor of
+            // picture's data attributes
+            infoTab.remove('alignment');
+
+            // Picture breaks captions
+            infoTab.remove('hasCaption');
+
+            // Add a select widget to choose image alignment.
+            infoTab.add({
+              type: 'select',
+              id: 'imageAlign',
+              label: 'Image Alignment',
+              items: [ [ 'Not Set', '' ], [ 'Left', 'left'],
+                       [ 'Right', 'right' ], [ 'Center', 'center'] ],
+              requiredContent: features.imageAlign.requiredContent,
+              setup: function(widget) {
+                alignment = widget.parts.image.getAttribute('data-picture-align');
+                this.setValue(alignment ? alignment : '');
+              },
+              // Creates a custom data-picture-align attribute since working with classes
+              // is more difficult. If we used classes, then we'd have to search for
+              // exisiting alignment classes and remove them before adding a new one.
+              // With the custom attribute we can always just overwrite it's value.
+              commit: function(widget) {
+                if (this.getValue() || this.isChanged()) {
+                  widget.parts.image.setAttribute('data-picture-align', this.getValue());
+                }
+              }
+
+            },
+              // Position before imageSize.
+              'imageSize'
+            );
+          }
           // Resources for the following:
           // Download: https://github.com/ckeditor/ckeditor-dev
           // See /plugins/image/dialogs/image.js
           // and refer to http://docs.ckeditor.com/#!/api/CKEDITOR.dialog.definition
           // Visit: file:///[path_to_ckeditor-dev]/plugins/devtools/samples/devtools.html
           // for an excellent way to find machine names for dialog elements.
-          if (dialogName == 'image') {
+          else if (dialogName == 'image') {
             dialogDefinition.removeContents('Link');
             var infoTab = dialogDefinition.getContents('info');
             var altText = infoTab.get('txtAlt');

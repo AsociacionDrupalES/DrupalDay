@@ -5,7 +5,8 @@ if (typeof Drupal !== 'undefined' && typeof jQuery !== 'undefined') {
       attach: function (context) {
         // Ensure we always pass a raw DOM element to picture fill, otherwise it
         // will fallback to the document scope and maybe handle to much.
-        window.picturefill($(context));
+        // Don't load if there's native picture element support.
+        ('HTMLPictureElement' in window) || window.picturefill($(context));
         // If this is an opened colorbox ensure the content dimensions are set
         // properly. colorbox.js of the colorbox modules sets #cboxLoadedContent
         // as context.

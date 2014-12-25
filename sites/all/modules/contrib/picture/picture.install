@@ -68,6 +68,14 @@ function picture_schema() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function picture_install() {
+  module_load_include('admin.inc', 'picture');
+  _picture_update_to_file_entity_2();
+}
+
+/**
  * Implements hook_uninstall().
  */
 function picture_uninstall() {

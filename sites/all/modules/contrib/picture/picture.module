@@ -4,6 +4,7 @@
  * @file
  * Picture formatter.
  */
+
 define('PICTURE_EMPTY_IMAGE', '_empty image_');
 define('PICTURE_ORIGINAL_IMAGE', '_original image_');
 
@@ -35,6 +36,27 @@ function picture_help($path, $arg) {
 
   }
   return $output;
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function picture_flush_caches() {
+  // After update.php, caches are flushed. Check if file_entity has updated to
+  // version 2.
+  module_load_include('admin.inc', 'picture');
+  _picture_update_to_file_entity_2();
+}
+
+/**
+ * Implement hook_modules_enabled().
+ */
+function picture_modules_enabled($modules) {
+  if (in_array('file_entity', $modules)) {
+    module_load_include('admin.inc', 'picture');
+    module_load_include('module', 'file_entity');
+    variable_set('picture_updated_to_file_entity_2', _picture_update_to_file_entity_2());
+  }
 }
 
 /**
@@ -120,48 +142,102 @@ function picture_mapping_save(PictureMapping $mapping) {
  */
 function picture_library() {
   $libraries = array();
-  $libraries['picturefill_head'] = array(
-    'title' => t('Picturefill head fix'),
-    'version' => '2.0',
-    'js' => array(
-      'document.createElement( "picture" );' => array(
-        'type' => 'inline',
-        'weight' => -10,
-        'group' => JS_DEFAULT,
-        'scope' => 'header',
-        'need_jquery' => FALSE,
-      ),
-    ),
-  );
-  $libraries['picturefill'] = array(
-    'title' => t('Picturefill'),
-    'website' => 'https://github.com/scottjehl/picturefill',
-    'version' => '2.0',
-    'js' => array(
-      drupal_get_path('module', 'picture') . '/picturefill2/picturefill.js' => array(
-        'type' => 'file',
-        'weight' => -10,
-        'group' => JS_DEFAULT,
-        'scope' => variable_get('picture_js_scope', 'footer'),
-        'need_jquery' => FALSE,
-        'async' => TRUE,
-      ),
-    ),
-  );
-  $libraries['picture.ajax'] = array(
-    'title' => t('Ajax support for picture'),
-    'version' => VERSION,
-    'js' => array(
-      drupal_get_path('module', 'picture') . '/picture.js' => array(
-        'type' => 'file',
-        'weight' => -10,
-        'group' => JS_DEFAULT,
-        'scope' => variable_get('picture_js_scope', 'footer'),
-        'need_jquery' => FALSE,
-        'async' => TRUE,
-      ),
-    ),
-  );
+  switch (variable_get('picture_polyfill_version', 'min')) {
+    case 'min':
+      $libraries['picturefill_head'] = array(
+        'title' => t('Picturefill head fix'),
+        'version' => '2.1.0',
+        'js' => array(
+          'document.createElement( "picture" );' => array(
+            'type' => 'inline',
+            'weight' => -10,
+            'group' => JS_DEFAULT,
+            'scope' => 'header',
+            'need_jquery' => FALSE,
+          ),
+        ),
+      );
+
+      $libraries['picturefill'] = array(
+        'title' => t('Picturefill'),
+        'website' => 'https://github.com/scottjehl/picturefill',
+        'version' => '2.0',
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/picturefill2/picturefill.min.js' => array(
+            'type' => 'file',
+            'weight' => -10,
+            'group' => JS_DEFAULT,
+            'scope' => variable_get('picture_js_scope', 'footer'),
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+      );
+
+      $libraries['picture.ajax'] = array(
+        'title' => t('Ajax support for picture'),
+        'version' => VERSION,
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/picture.min.js' => array(
+            'type' => 'file',
+            'weight' => -10,
+            'group' => JS_DEFAULT,
+            'scope' => variable_get('picture_js_scope', 'footer'),
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+      );
+      break;
+
+    case 'dev':
+      $libraries['picturefill_head'] = array(
+        'title' => t('Picturefill head fix'),
+        'version' => '2.0',
+        'js' => array(
+          'document.createElement( "picture" );' => array(
+            'type' => 'inline',
+            'weight' => -10,
+            'group' => JS_DEFAULT,
+            'scope' => 'header',
+            'need_jquery' => FALSE,
+          ),
+        ),
+      );
+
+      $libraries['picturefill'] = array(
+        'title' => t('Picturefill'),
+        'website' => 'https://github.com/scottjehl/picturefill',
+        'version' => '2.0',
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/picturefill2/picturefill.js' => array(
+            'type' => 'file',
+            'weight' => -10,
+            'group' => JS_DEFAULT,
+            'scope' => variable_get('picture_js_scope', 'footer'),
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+      );
+
+      $libraries['picture.ajax'] = array(
+        'title' => t('Ajax support for picture'),
+        'version' => VERSION,
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/picture.js' => array(
+            'type' => 'file',
+            'weight' => -10,
+            'group' => JS_DEFAULT,
+            'scope' => variable_get('picture_js_scope', 'footer'),
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+      );
+      break;
+  }
+
   return $libraries;
 }
 
@@ -226,13 +302,23 @@ function picture_theme() {
     'image_srcset' => array(
       'variables' => array(
         'uri' => NULL,
-        'data_uri' => NULL,
+        'path' => NULL,
         'width' => NULL,
         'height' => NULL,
         'alt' => '',
         'title' => NULL,
         'attributes' => array(),
         'srcset' => array(),
+        'sizes' => NULL,
+      ),
+    ),
+    'picture_sizes_formatter' => array(
+      'variables' => array(
+        'item' => NULL,
+        'path' => NULL,
+        'image_styles' => array(),
+        'fallback_image_style' => NULL,
+        'sizes' => NULL,
       ),
     ),
   );
@@ -242,12 +328,14 @@ function picture_theme() {
  * Implements hook_field_formatter_info().
  */
 function picture_field_formatter_info() {
-  $formatters = array(
-    'picture' => array(
+  $formatters = array();
+  $mappings = array_keys(picture_get_mapping_options());
+  if ($mappings) {
+    $formatters['picture'] = array(
       'label' => t('Picture'),
       'field types' => array('image'),
       'settings' => array(
-        'picture_mapping' => '',
+        'picture_mapping' => reset($mappings),
         'fallback_image_style' => '',
         'image_link' => '',
         'colorbox_settings' => array(
@@ -258,6 +346,24 @@ function picture_field_formatter_info() {
           'colorbox_caption_custom' => '',
           'colorbox_multivalue_index' => NULL,
         ),
+      ),
+    );
+  }
+  $formatters['picture_sizes_formatter'] = array(
+    'label' => t('Image with sizes'),
+    'field types' => array('image'),
+    'settings' => array(
+      'sizes' => '',
+      'image_styles' => array(),
+      'fallback_image_style' => '',
+      'image_link' => '',
+      'colorbox_settings' => array(
+        'colorbox_group' => '',
+        'colorbox_gallery' => 'post',
+        'colorbox_gallery_custom' => '',
+        'colorbox_caption' => 'auto',
+        'colorbox_caption_custom' => '',
+        'colorbox_multivalue_index' => NULL,
       ),
     ),
   );
@@ -270,9 +376,18 @@ function picture_field_formatter_info() {
  */
 function picture_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
   $display = $instance['display'][$view_mode];
+  $function = "picture_field_formatter_settings_{$display['type']}_form";
   $settings = $display['settings'];
-  $options = picture_get_mapping_options();
+  return $function($field, $instance, $settings);
+}
 
+/**
+ * Helper function.
+ *
+ * @see picture_field_formatter_settings_form()
+ */
+function picture_field_formatter_settings_picture_form($field, $instance, $settings) {
+  $options = picture_get_mapping_options();
   if ($options) {
     $element['picture_mapping'] = array(
       '#title' => t('Picture mapping'),
@@ -405,7 +520,8 @@ function picture_field_formatter_settings_form($field, $instance, $view_mode, $f
     );
 
     // Allow users to hide or set a custom recursion limit.
-    // The module token_tweaks sets a global recursion limit that can not be bypassed.
+    // The module token_tweaks sets a global recursion limit that can not be
+    // bypassed.
     if (module_exists('token') && $recursion_limit = min(variable_get('token_tree_recursion_limit', 3), variable_get('colorbox_token_recursion_limit', 3))) {
       $element['colorbox_settings']['colorbox_token'] = array(
         '#type' => 'fieldset',
@@ -439,6 +555,72 @@ function picture_field_formatter_settings_form($field, $instance, $view_mode, $f
 }
 
 /**
+ * Helper function.
+ *
+ * @see picture_field_formatter_settings_form()
+ */
+function picture_field_formatter_settings_picture_sizes_formatter_form($field, $instance, $settings) {
+  $element = array();
+  if ($instance['entity_type'] == 'file') {
+    if (empty($settings['sizes'])) {
+      $settings['sizes'] = '(min-width: 0px)';
+    }
+    $styles = array_filter($settings['image_styles']);
+    if (empty($styles)) {
+      $settings['image_styles'][PICTURE_EMPTY_IMAGE] = PICTURE_EMPTY_IMAGE;
+    }
+  }
+  $element['sizes'] = array(
+    '#title' => t('Sizes'),
+    '#type' => 'textfield',
+    '#description' => t(
+      'The value of the sizes attribute. See !link for more information.',
+      array(
+      '!link' => l(t('the spec'), 'http://www.whatwg.org/specs/web-apps/current-work/multipage/embedded-content.html#introduction-3:viewport-based-selection-2')
+      )
+    ),
+    '#default_value' => $settings['sizes'],
+    '#required' => TRUE,
+  );
+
+  $image_styles = image_style_options(FALSE);
+  $image_styles[PICTURE_EMPTY_IMAGE] = t('Empty image');
+  $image_styles[PICTURE_ORIGINAL_IMAGE] = t('Original image');
+
+  $element['image_styles'] = array(
+    '#title' => t('Image styles'),
+    '#type' => 'checkboxes',
+    '#default_value' => $settings['image_styles'],
+    '#options' => $image_styles,
+    '#required' => TRUE,
+  );
+
+  $element['fallback_image_style'] = array(
+    '#title' => t('Fallback image style'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_styles'],
+    '#options' => $image_styles,
+    '#required' => TRUE,
+  );
+
+  $link_types = picture_link_types($instance);
+  unset($link_types['colorbox']);
+
+  $element['image_link'] = array(
+    '#title' => t('Link image to'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_link'],
+    '#empty_option' => t('Nothing'),
+    '#options' => $link_types,
+    '#attributes' => array(
+      'class' => array('picture-image-link'),
+    ),
+  );
+
+  return $element;
+}
+
+/**
  * Returns a list of picture mappings for use in a select list.
  */
 function picture_get_mapping_options() {
@@ -446,7 +628,7 @@ function picture_get_mapping_options() {
   $picture_mappings = picture_mapping_load_all();
   if ($picture_mappings && !empty($picture_mappings)) {
     foreach ($picture_mappings as $picture_mapping) {
-      // Exclude old mappings
+      // Exclude old mappings.
       if ($picture_mapping instanceof PictureMapping && (!isset($picture_mapping->disabled) || !$picture_mapping->disabled) && $picture_mapping->hasMappings()) {
         $picture_mapping_options[$picture_mapping->getMachineName()] = $picture_mapping->label();
       }
@@ -460,8 +642,17 @@ function picture_get_mapping_options() {
  */
 function picture_field_formatter_settings_summary($field, $instance, $view_mode) {
   $display = $instance['display'][$view_mode];
+  $function = "picture_field_formatter_settings_{$display['type']}_summary";
   $settings = $display['settings'];
+  return $function($field, $instance, $settings);
+}
 
+/**
+ * Helper function.
+ *
+ * @see picture_field_formatter_settings_summary()
+ */
+function picture_field_formatter_settings_picture_summary($field, $instance, $settings) {
   $summary = array();
 
   $picture_mapping = picture_mapping_load($settings['picture_mapping']);
@@ -485,7 +676,6 @@ function picture_field_formatter_settings_summary($field, $instance, $view_mode)
   else {
     $summary[] = t('Select a responsive image mapping.');
   }
-
 
   // Display the settings for the colorbox if chosen.
   if ($settings['image_link'] == 'colorbox') {
@@ -520,9 +710,51 @@ function picture_field_formatter_settings_summary($field, $instance, $view_mode)
 }
 
 /**
+ * Helper function.
+ *
+ * @see picture_field_formatter_settings_form()
+ */
+function picture_field_formatter_settings_picture_sizes_formatter_summary($field, $instance, $settings) {
+  $summary = array();
+  $summary[] = t('Sizes: @sizes', array('@sizes' => $settings['sizes']));
+
+  $image_styles = image_style_options(FALSE);
+  unset($image_styles['']);
+  $image_styles[PICTURE_EMPTY_IMAGE] = t('Empty image');
+  $image_styles[PICTURE_ORIGINAL_IMAGE] = t('Original image');
+  $selected_styles = array_filter($settings['image_styles']);
+  $summary[] = t(
+    'Image styles: @styles',
+    array(
+      '@styles' => implode(', ', array_intersect_key($image_styles, $selected_styles)),
+    )
+  );
+
+  $summary[] = t('Fallback image style: @style', array('@style' => $image_styles[$settings['fallback_image_style']]));
+
+  $link_types = picture_link_types($instance);
+  // Display this setting only if image is linked.
+  if (isset($link_types[$settings['image_link']])) {
+    $summary[] = filter_xss_admin($link_types[$settings['image_link']]);
+  }
+
+  return implode('<br />', $summary);
+}
+
+/**
  * Implements hook_field_formatter_view().
  */
 function picture_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $function = "picture_field_formatter_{$display['type']}_view";
+  return $function($entity_type, $entity, $field, $instance, $langcode, $items, $display);
+}
+
+/**
+ * Helper function.
+ *
+ * @see picture_field_formatter_view()
+ */
+function picture_field_formatter_picture_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   $settings = $display['settings'];
   // Check if the formatter involves a link.
@@ -547,7 +779,23 @@ function picture_field_formatter_view($entity_type, $entity, $field, $instance, 
   $fallback_image_style = $settings['fallback_image_style'];
   // Support old display settings from 7.x-1.x.
   $mapping_name = isset($display['settings']['picture_mapping']) && !empty($display['settings']['picture_mapping']) ? $display['settings']['picture_mapping'] : $display['settings']['picture_group'];
-  $picture_mapping = picture_mapping_load($mapping_name);
+  // If we haven't saved a picture mapping for this field previously and this isn't a field formatter screen (i.e. panels), load a default mapping.
+  $picture_mapping = FALSE;
+  if (isset($mapping_name) && !empty($mapping_name)) {
+    $picture_mapping = picture_mapping_load($mapping_name);
+    if (!$picture_mapping) {
+      trigger_error("Unable to load picture mapping $mapping_name.", E_USER_ERROR);
+      return $element;
+    }
+  }
+  else {
+    $all_mappings = picture_mapping_load_all();
+    $picture_mapping = reset($all_mappings);
+    if (!$picture_mapping) {
+      trigger_error("No picture mappings have been defined yet.", E_USER_ERROR);
+      return $element;
+    }
+  }
   $breakpoint_styles = picture_get_mapping_breakpoints($picture_mapping, $fallback_image_style);
 
   // Assume regular display.
@@ -559,6 +807,10 @@ function picture_field_formatter_view($entity_type, $entity, $field, $instance, 
   if (module_exists('colorbox') && $display['settings']['image_link'] == 'colorbox') {
     $formatter = 'picture_formatter_colorbox';
     $mappings = picture_mapping_load($display['settings']['colorbox_settings']['colorbox_group']);
+    if (!$mappings) {
+      trigger_error("Unable to load picture mapping {$display['settings']['colorbox_settings']['colorbox_group']}.", E_USER_ERROR);
+      return $element;
+    }
     $colorbox_breakpoints = picture_get_mapping_breakpoints($mappings, $colorbox_fallback_image_style);
   }
 
@@ -588,11 +840,13 @@ function picture_field_formatter_view($entity_type, $entity, $field, $instance, 
     }
     $element[$delta] = array(
       '#theme' => $formatter,
-      '#attached' => array('library' => array(
-        array('picture', 'picturefill_head'),
-        array('picture', 'picturefill'),
-        array('picture', 'picture.ajax'),
-      )),
+      '#attached' => array(
+        'library' => array(
+          array('picture', 'picturefill_head'),
+          array('picture', 'picturefill'),
+          array('picture', 'picture.ajax'),
+        ),
+      ),
       '#item' => $item,
       '#image_style' => $fallback_image_style,
       '#breakpoints' => $breakpoint_styles,
@@ -629,18 +883,23 @@ function picture_field_formatter_view($entity_type, $entity, $field, $instance, 
         case 'post':
           $gallery_id = 'gallery-' . $entity_id;
           break;
+
         case 'page':
           $gallery_id = 'gallery-all';
           break;
+
         case 'field_post':
           $gallery_id = 'gallery-' . $entity_id . '-' . $colorbox_group_field;
           break;
+
         case 'field_page':
           $gallery_id = 'gallery-' . $colorbox_group_field;
           break;
+
         case 'custom':
           $gallery_id = $colorbox_settings['colorbox_gallery_custom'];
           break;
+
         default:
           $gallery_id = '';
       }
@@ -665,18 +924,23 @@ function picture_field_formatter_view($entity_type, $entity, $field, $instance, 
             $caption = '';
           }
           break;
+
         case 'title':
           $caption = $item['title'];
           break;
+
         case 'alt':
           $caption = $item['alt'];
           break;
+
         case 'node_title':
           $caption = $entity_title;
           break;
+
         case 'custom':
           $caption = token_replace($colorbox_settings['colorbox_caption_custom'], array($entity_type => $entity, 'file' => (object) $item), array('clear' => TRUE));
           break;
+
         default:
           $caption = '';
       }
@@ -693,6 +957,78 @@ function picture_field_formatter_view($entity_type, $entity, $field, $instance, 
     }
   }
   return $element;
+}
+
+/**
+ * Helper function.
+ *
+ * @see picture_field_formatter_view()
+ */
+function picture_field_formatter_picture_sizes_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $elements = array();
+  $settings = $display['settings'];
+  // Check if the formatter involves a link.
+  $image_link = $display['settings']['image_link'];
+  if ($image_link == 'content') {
+    $uri = entity_uri($entity_type, $entity);
+  }
+  elseif ($image_link == 'file') {
+    $link_file = TRUE;
+  }
+  elseif ($image_link) {
+    if (isset($entity->$image_link)) {
+      // Support for field translations.
+      $language = field_language($entity_type, $entity, $field['field_name']);
+      $link_field = $entity->$image_link;
+
+      if (isset($link_field[$language])) {
+        $link_values = $link_field[$language];
+      }
+    }
+  }
+
+  $fallback_image_style = '';
+
+  // Check if the user defined a custom fallback image style.
+  if ($settings['fallback_image_style']) {
+    $fallback_image_style = $settings['fallback_image_style'];
+  }
+
+  foreach ($items as $delta => $item) {
+    if (isset($link_file)) {
+      $uri = array(
+        'path' => file_create_url($item['uri']),
+        'options' => array(),
+      );
+    }
+    // Handle multiple link with image values.
+    if (isset($link_values)) {
+      if (isset($link_values[$delta]['url'])) {
+        $uri = array(
+          'path' => $link_values[$delta]['url'],
+          'options' => array('attributes' => $link_values[$delta]['attributes']),
+        );
+        // Handle query fragment if there is any.
+        if (!empty($link_values[$delta]['query'])) {
+          $uri['options']['query'] = $link_values[$delta]['query'];
+        }
+      }
+      // If there are more image values than link values unset the link.
+      else {
+        unset($uri);
+      }
+    }
+    $elements[$delta] = array(
+      '#theme' => 'picture_sizes_formatter',
+      '#item' => $item,
+      '#image_styles' => array_filter($settings['image_styles']),
+      '#fallback_image_style' => $settings['fallback_image_style'],
+      '#sizes' => $settings['sizes'],
+      '#path' => isset($uri) ? $uri : '',
+    );
+
+  }
+  return $elements;
 }
 
 /**
@@ -717,7 +1053,7 @@ function theme_picture_formatter($variables) {
     '#style_name' => $variables['image_style'],
     '#breakpoints' => $variables['breakpoints'],
     '#uri' => $item['uri'],
-    '#alt' => $item['alt'],
+    '#alt' => isset($item['alt']) ? $item['alt'] : '',
   );
   if (isset($item['title']) && drupal_strlen($item['title']) != 0) {
     $responsive_image['#title'] = $item['title'];
@@ -730,6 +1066,19 @@ function theme_picture_formatter($variables) {
   }
 
   return drupal_render($responsive_image);
+}
+
+/**
+ * Theme pictue sizes formatter.
+ */
+function theme_picture_sizes_formatter($variables) {
+  $variables['image_style'] = $variables['fallback_image_style'];
+  $variables['breakpoints'][BREAKPOINTS_SOURCE_TYPE_MODULE . '.picture.empty_srcset']['1x'] = array(
+    'mapping_type' => 'sizes',
+    'sizes' => $variables['sizes'],
+    'sizes_image_styles' => $variables['image_styles'],
+  );
+  return theme_picture_formatter($variables);
 }
 
 /**
@@ -821,10 +1170,23 @@ function theme_picture($variables) {
 
   $sources = array();
   $output = array();
-  if (($image = image_load($variables['uri'])) === FALSE) {
-    watchdog('Picture', 'Unable to load image: %image', array('%image' => $variables['uri']));
-    // If the image couldn't be loaded return nothing.
-    return NULL;
+  // If we know width and height we use them, if not we should get image info
+  if (!empty($variables['width']) && !empty($variables['height'])) {
+    $dimensions = array(
+      'width' => $variables['width'],
+      'height' => $variables['height'],
+    );
+  }
+  else {
+    if (($image_info = image_get_info($variables['uri'])) === FALSE) {
+      watchdog('Picture', 'Unable to load image: %image', array('%image' => $variables['uri']));
+      // If the image couldn't be loaded return nothing.
+      return NULL;
+    }
+    $dimensions = array(
+      'width' => $image_info['width'],
+      'height' => $image_info['height'],
+    );
   }
 
   // All breakpoints and multipliers.
@@ -838,17 +1200,14 @@ function theme_picture($variables) {
         switch ($mapping_definition['mapping_type']) {
           case 'sizes':
             foreach (array_filter($mapping_definition['sizes_image_styles']) as $image_style_name) {
-              $dimensions = array(
-                'width' => $image->info['width'],
-                'height' => $image->info['height'],
-              );
+
               picture_get_image_dimensions($image_style_name, $dimensions);
               // Get mime type.
               //$derivative_mime_type = $mime_type;
               //$image_style->transformMimeType($derivative_mime_type);
               //$derivative_mime_types[] = $derivative_mime_type;
 
-              $srcset[] = _picture_image_style_url($image_style_name, $variables['uri']) . ' ' . $dimensions['width'] . 'w';
+              $srcset[$dimensions['width']] = _picture_image_style_url($image_style_name, $variables['uri']) . ' ' . $dimensions['width'] . 'w';
               $sizes = array_merge(explode(',', $mapping_definition['sizes']), $sizes);
             }
             break;
@@ -857,16 +1216,19 @@ function theme_picture($variables) {
             // $derivative_mime_type = $mime_type;
             // $image_style->transformMimeType($derivative_mime_type);
             // $derivative_mime_types[] = $derivative_mime_type;
-            $srcset[] = _picture_image_style_url($mapping_definition['image_style'], $variables['uri']) . ' ' . $multiplier;
+            $srcset[$multiplier] = _picture_image_style_url($mapping_definition['image_style'], $variables['uri']) . ' ' . $multiplier;
             break;
         }
       }
+
+      // Sort srcset.
+      ksort($srcset);
 
       $sources[] = array(
         '#theme' => 'picture_source',
         '#srcset' => implode(', ', array_unique($srcset)),
         '#media' => $breakpoint->breakpoint,
-        '#sizes' => implode(',', array_unique($sizes)),
+        '#sizes' => implode(', ', array_unique($sizes)),
       );
     }
   }
@@ -897,33 +1259,16 @@ function theme_picture($variables) {
     $output[] = '<!--[if IE 9]></video><![endif]-->';
 
     // Fallback image.
-    if ($variables['style_name'] !== PICTURE_EMPTY_IMAGE) {
-      $dimensions = array(
-        'width' => $image->info['width'],
-        'height' => $image->info['height'],
-      );
-      picture_get_image_dimensions($variables['style_name'], $dimensions);
-      $fallback_image = array(
-        '#theme' => 'image_srcset',
-        '#srcset' => array(
-          array(
-            'uri' => _picture_image_style_url($variables['style_name'], $variables['uri']),
-            'width' => $dimensions['width'] . 'w',
-          ),
-        ),
-      );
+    picture_get_image_dimensions($variables['style_name'], $dimensions);
+    $srcset = array('uri' => _picture_image_style_url($variables['style_name'], $variables['uri']));
+    if (!empty($dimensions['width'])) {
+      $srcset['width'] = $dimensions['width'] . 'w';
     }
-    else {
-      $fallback_image = array(
-        '#theme' => 'image_srcset',
-        '#srcset' => array(
-          array(
-            'data_uri' => _picture_image_style_url($variables['style_name'], $variables['uri']),
-            'width' => '1w',
-          ),
-        ),
-      );
-    }
+    $fallback_image = array(
+      '#theme' => 'image_srcset',
+      '#srcset' => array($srcset),
+    );
+
     $fallback_image += array(
       '#alt' => isset($attributes['alt']) ? $attributes['alt'] : '',
       '#title' => isset($attributes['title']) ? $attributes['title'] : '',
@@ -945,6 +1290,7 @@ function theme_picture($variables) {
  *   - path: Either the path of the image file (relative to base_path()) or a
  *     full URL.
  *   - srcset: Array of multiple URI's and sizes/multipliers.
+ *   - sizes: The value for the sizes attribute.
  *   - width: The width of the image (if known).
  *   - height: The height of the image (if known).
  *   - alt: The alternative text for text-based browsers. HTML 4 and XHTML 1.0
@@ -963,43 +1309,52 @@ function theme_picture($variables) {
  */
 function theme_image_srcset($variables) {
   $attributes = isset($variables['attributes']) ? $variables['attributes'] : array();
-  if (isset($variables['path']) && !empty($variables['path'])) {
-    $attributes['src'] = file_create_url($variables['path']);
+  if (isset($variables['uri']) && !empty($variables['uri'])) {
+    // TODO: remove when https://www.drupal.org/node/1342504 is fixed.
+    if (strpos($variables['uri'], 'data:') === 0) {
+      $attributes['src'] = $variables['uri'];
+    }
+    else {
+      $attributes['src'] = file_create_url($variables['uri']);
+    }
   }
   if (isset($variables['srcset']) && !empty($variables['srcset'])) {
     $srcsets = array();
-    foreach ($variables['srcset'] as $srcset) {
+    foreach ($variables['srcset'] as $src) {
       // URI is mandatory.
-      if (isset($srcset['uri']) && !empty($srcset['uri'])) {
-        $new_source = file_create_url($srcset['uri']);
-        if (isset($srcset['width']) && !empty($srcset['width'])) {
-          $new_source .= ' ' . $srcset['width'];
+      if (isset($src['uri']) && !empty($src['uri'])) {
+        $key = '';
+        // TODO: remove when https://www.drupal.org/node/1342504 is fixed.
+        if (strpos($src['uri'], 'data:') === 0) {
+          $source = $src['uri'];
         }
-        elseif (isset($srcset['multiplier']) && !empty($srcset['multiplier'])) {
-          $new_source .= ' ' . $srcset['multiplier'];
+        else {
+          $source = file_create_url($src['uri']);
         }
-        $srcsets[] = $new_source;
-      }
-      elseif (isset($srcset['data_uri']) && !empty($srcset['data_uri'])) {
-        $new_source = $srcset['data_uri'];
-        if (isset($srcset['width']) && !empty($srcset['width'])) {
-          $new_source .= ' ' . $srcset['width'];
+        if (isset($src['width']) && !empty($src['width'])) {
+          $source .= ' ' . $src['width'];
+          $key = $src['width'];
         }
-        elseif (isset($srcset['multiplier']) && !empty($srcset['multiplier'])) {
-          $new_source .= ' ' . $srcset['multiplier'];
+        elseif (isset($src['multiplier']) && !empty($src['multiplier'])) {
+          $source .= ' ' . $src['multiplier'];
+          $key = $src['multiplier'];
         }
-        $srcsets[] = $new_source;
+        $srcsets[$key] = $source;
       }
     }
+    ksort($srcsets);
     $attributes['srcset'] = implode(', ', $srcsets);
   }
-  foreach (array('width', 'height', 'alt', 'title') as $key) {
+  foreach (array('width', 'height', 'alt', 'title', 'sizes') as $key) {
 
     if (isset($variables[$key])) {
       $attributes[$key] = $variables[$key];
     }
   }
-  return '<img' . drupal_attributes($attributes) . ' />';
+  if (isset($variables['path']) && !empty($variables['path'])) {
+    return l('<img ' . drupal_attributes($attributes) . ' />', $variables['path']['path'], array('html' => TRUE) + $variables['path']['options']);
+  }
+  return '<img ' . drupal_attributes($attributes) . ' />';
 }
 
 /**
@@ -1127,6 +1482,10 @@ function _picture_filter_prepare_image($image) {
   $fallback_image_style = '';
   $mapping_id = isset($attributes['data-picture-mapping']) ? $attributes['data-picture-mapping'] : $attributes['data-picture-group'];
   $mappings = picture_mapping_load($mapping_id);
+  // Make sure we have valid mappings.
+  if (empty($mappings)) {
+    return FALSE;
+  }
   $breakpoint_styles = picture_get_mapping_breakpoints($mappings, $fallback_image_style);
 
   // Make sure we have a src attribute.
@@ -1220,9 +1579,22 @@ function picture_page_build(&$page) {
  *
  * @param
  *   Image src starting with http://, https://, or root relative /.
- *   It must point to a local file.
  */
 function picture_image_uri($src) {
+  foreach (module_implements('picture_image_uri') as $module) {
+    $function = $module . '_picture_image_uri';
+    if ($uri = $function($src)) {
+      $uri = file_stream_wrapper_uri_normalize($uri);
+      return urldecode($uri);
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_picture_image_uri().
+ */
+function picture_picture_image_uri($src) {
   global $base_path;
 
   $uri = '';
@@ -1231,23 +1603,23 @@ function picture_image_uri($src) {
   // Remove leading or trailing slashes.
   $src = trim($src, '/');
 
-  // List all visible stream wrappers. Make sure they're also local since the
-  // getDirectoryPath method exists only for classes that extend
-  // DrupalLocalStreamWrapper.
-  $local_visible_stream_wrappers = array_intersect_key(file_get_stream_wrappers(STREAM_WRAPPERS_LOCAL), file_get_stream_wrappers(STREAM_WRAPPERS_VISIBLE));
+  // List all visible stream wrappers.
+  $visible_stream_wrappers = array_intersect_key(file_get_stream_wrappers(STREAM_WRAPPERS_WRITE), file_get_stream_wrappers(STREAM_WRAPPERS_VISIBLE));
   $needles = array();
   $matches = array();
-  foreach ($local_visible_stream_wrappers as $scheme => $data) {
+  foreach ($visible_stream_wrappers as $scheme => $data) {
     $class = file_stream_wrapper_get_class($scheme);
     $stream_wrapper = new $class();
     // Trim leading or trailing slashes since the Directory could be root
     // relative.
-    $needles[$scheme] = trim($base_path . $stream_wrapper->getDirectoryPath(), '/');
+    if (method_exists($stream_wrapper, 'getDirectoryPath')) {
+      $needles[$scheme] = trim($base_path . $stream_wrapper->getDirectoryPath(), '/');
 
-    // Check whether the file stream directory is at the beginning of
-    // the image src. Use === since strpos could return false.
-    if (!empty($needles[$scheme]) && strpos($src, $needles[$scheme]) === 0) {
-      $matches[$scheme] = $needles[$scheme];
+      // Check whether the file stream directory is at the beginning of
+      // the image src. Use === since strpos could return false.
+      if (!empty($needles[$scheme]) && strpos($src, $needles[$scheme]) === 0) {
+        $matches[$scheme] = $needles[$scheme];
+      }
     }
   }
 
@@ -1299,9 +1671,7 @@ function picture_image_uri($src) {
 
   // Construct the Drupal uri.
   $uri = $the_scheme . '://' . str_replace($matches[$the_scheme], '', $src);
-  $uri = file_stream_wrapper_uri_normalize($uri);
-
-  return urldecode($uri);
+  return $uri;
 }
 
 /**
@@ -1314,7 +1684,7 @@ function picture_wysiwyg_plugin($editor, $version) {
       'path' => drupal_get_path('module', 'picture') .'/ckeditor/plugins/',
       'load' => TRUE,
       'extensions' => array('picture_ckeditor' => t('Responsive images with the Picture Module')),
-      'url' => 'http://drupal.org/projects/picture',
+      'url' => 'https://www.drupal.org/project/picture',
     ));
   }
 }
@@ -1469,4 +1839,37 @@ function picture_mapping_create($set_defaults) {
 
 function picture_mapping_export(PictureMapping $mapping, $indent) {
   return $mapping->export($indent);
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function picture_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "breakpoints" && $api == "default_breakpoints") {
+    return array("version" => "1");
+  }
+}
+
+/**
+ * Implements hook_default_breakpoints().
+ */
+function picture_default_breakpoints() {
+  $export = array();
+
+  $breakpoint = new stdClass();
+  $breakpoint->disabled = FALSE; /* Edit this to true to make a default breakpoint disabled initially */
+  $breakpoint->api_version = 1;
+  $breakpoint->machine_name = BREAKPOINTS_SOURCE_TYPE_MODULE . '.picture.empty_srcset';
+  $breakpoint->name = 'Empty srcset';
+  $breakpoint->breakpoint = '';
+  $breakpoint->source = 'picture';
+  $breakpoint->source_type = BREAKPOINTS_SOURCE_TYPE_MODULE;
+  $breakpoint->status = 1;
+  $breakpoint->weight = 0;
+  $breakpoint->multipliers = array(
+    '1x' => '1x',
+  );
+  $export[BREAKPOINTS_SOURCE_TYPE_MODULE . '.picture.empty_srcset'] = $breakpoint;
+
+  return $export;
 }

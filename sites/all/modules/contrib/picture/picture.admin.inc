@@ -249,6 +249,18 @@ function picture_admin_settings() {
     '#default_value' => variable_get('picture_js_scope', 'footer'),
   );
 
+  $form['picture_polyfill_version'] = array(
+    '#title' => t('Picture polyfill to use'),
+    '#description' => t('For performance reasons, use the minified version.'),
+    '#type' => 'radios',
+    '#options' => array(
+      'min' => t('Minified polyfill'),
+      'dev' => t('Development polyfill'),
+      'own' => t('Use custom polyfill'),
+    ),
+    '#default_value' => variable_get('picture_polyfill_version', 'min'),
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Save',
@@ -295,10 +307,13 @@ function picture_admin_settings_submit($form, &$form_state) {
     variable_set('picture_ckeditor_mappings', $ckeditor_mappings);
     variable_set('picture_ckeditor_label', $form_state['values']['ckeditor_label']);
   }
+
   if (isset($form_state['values']['picture_updated_to_file_entity_2']) && $form_state['values']['picture_updated_to_file_entity_2']) {
     variable_set('picture_updated_to_file_entity_2', _picture_update_to_file_entity_2());
   }
+
   variable_set('picture_js_scope', $form_state['values']['picture_js_scope']);
+  variable_set('picture_polyfill_version', $form_state['values']['picture_polyfill_version']);
   drupal_set_message(t('Your settings have been saved'));
 }
 
