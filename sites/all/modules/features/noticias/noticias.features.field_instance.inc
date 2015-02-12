@@ -108,6 +108,14 @@ function noticias_field_default_field_instances() {
         'module' => 'picture',
         'settings' => array(
           'colorbox' => 'flexslider_home',
+          'colorbox_settings' => array(
+            'colorbox_caption' => 'auto',
+            'colorbox_caption_custom' => '',
+            'colorbox_gallery' => 'post',
+            'colorbox_gallery_custom' => '',
+            'colorbox_group' => '',
+            'colorbox_multivalue_index' => NULL,
+          ),
           'fallback_image_style' => '',
           'image_link' => 'content',
           'picture_mapping' => 'image_teaser',

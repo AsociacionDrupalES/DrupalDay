@@ -22,7 +22,7 @@ function sesiones_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Sesiones propuestas';
+  $handler->display->display_options['title'] = 'Sesiones';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['use_more_text'] = 'más';
   $handler->display->display_options['access']['type'] = 'perm';
@@ -32,15 +32,8 @@ function sesiones_views_default_views() {
   $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Aplicar';
   $handler->display->display_options['exposed_form']['options']['reset_button_label'] = 'Reiniciar';
   $handler->display->display_options['exposed_form']['options']['exposed_sorts_label'] = 'Ordenar por';
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = 'Elementos por página';
-  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all_label'] = '- Todos -';
-  $handler->display->display_options['pager']['options']['expose']['offset_label'] = 'Desplazamiento';
-  $handler->display->display_options['pager']['options']['tags']['first'] = '« primera';
-  $handler->display->display_options['pager']['options']['tags']['previous'] = '‹ anterior';
-  $handler->display->display_options['pager']['options']['tags']['next'] = 'siguiente ›';
-  $handler->display->display_options['pager']['options']['tags']['last'] = 'última »';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'footable';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
@@ -140,14 +133,6 @@ function sesiones_views_default_views() {
     'sesion' => 'sesion',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Criterios de filtrado: Campo: Estado sesión (field_estado_sesion) */
-  $handler->display->display_options['filters']['field_estado_sesion_value']['id'] = 'field_estado_sesion_value';
-  $handler->display->display_options['filters']['field_estado_sesion_value']['table'] = 'field_data_field_estado_sesion';
-  $handler->display->display_options['filters']['field_estado_sesion_value']['field'] = 'field_estado_sesion_value';
-  $handler->display->display_options['filters']['field_estado_sesion_value']['value'] = array(
-    'Propuesta' => 'Propuesta',
-  );
-  $handler->display->display_options['filters']['field_estado_sesion_value']['group'] = 1;
   /* Criterios de filtrado: Contenido: Nivel experiencia (field_nivel_experiencia) */
   $handler->display->display_options['filters']['field_nivel_experiencia_value']['id'] = 'field_nivel_experiencia_value';
   $handler->display->display_options['filters']['field_nivel_experiencia_value']['table'] = 'field_data_field_nivel_experiencia';
@@ -196,6 +181,8 @@ function sesiones_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Sesiones propuestas';
   $handler->display->display_options['path'] = 'sesiones-propuestas';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Sesiones propuestas';
@@ -203,27 +190,102 @@ function sesiones_views_default_views() {
   $handler->display->display_options['menu']['name'] = 'main-menu';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
+
+  /* Display: Página */
+  $handler = $view->new_display('page', 'Página', 'page_1');
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Criterios de filtrado: Contenido: Publicado */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Criterios de filtrado: Contenido: Tipo */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'sesion' => 'sesion',
+  );
+  $handler->display->display_options['filters']['type']['group'] = 1;
+  /* Criterios de filtrado: Campo: Estado sesión (field_estado_sesion) */
+  $handler->display->display_options['filters']['field_estado_sesion_value']['id'] = 'field_estado_sesion_value';
+  $handler->display->display_options['filters']['field_estado_sesion_value']['table'] = 'field_data_field_estado_sesion';
+  $handler->display->display_options['filters']['field_estado_sesion_value']['field'] = 'field_estado_sesion_value';
+  $handler->display->display_options['filters']['field_estado_sesion_value']['value'] = array(
+    'Aceptada' => 'Aceptada',
+  );
+  $handler->display->display_options['filters']['field_estado_sesion_value']['group'] = 1;
+  /* Criterios de filtrado: Contenido: Nivel experiencia (field_nivel_experiencia) */
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['id'] = 'field_nivel_experiencia_value';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['table'] = 'field_data_field_nivel_experiencia';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['field'] = 'field_nivel_experiencia_value';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['group'] = 1;
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['expose']['operator_id'] = 'field_nivel_experiencia_value_op';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['expose']['label'] = 'Nivel experiencia';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['expose']['operator'] = 'field_nivel_experiencia_value_op';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['expose']['identifier'] = 'field_nivel_experiencia_value';
+  $handler->display->display_options['filters']['field_nivel_experiencia_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  /* Criterios de filtrado: Contenido: Audiencia (field_audiencia) */
+  $handler->display->display_options['filters']['field_audiencia_value']['id'] = 'field_audiencia_value';
+  $handler->display->display_options['filters']['field_audiencia_value']['table'] = 'field_data_field_audiencia';
+  $handler->display->display_options['filters']['field_audiencia_value']['field'] = 'field_audiencia_value';
+  $handler->display->display_options['filters']['field_audiencia_value']['group'] = 1;
+  $handler->display->display_options['filters']['field_audiencia_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_audiencia_value']['expose']['operator_id'] = 'field_audiencia_value_op';
+  $handler->display->display_options['filters']['field_audiencia_value']['expose']['label'] = 'Audiencia';
+  $handler->display->display_options['filters']['field_audiencia_value']['expose']['operator'] = 'field_audiencia_value_op';
+  $handler->display->display_options['filters']['field_audiencia_value']['expose']['identifier'] = 'field_audiencia_value';
+  $handler->display->display_options['filters']['field_audiencia_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  /* Criterios de filtrado: Contenido: Versión de Drupal (field_version_drupal) */
+  $handler->display->display_options['filters']['field_version_drupal_value']['id'] = 'field_version_drupal_value';
+  $handler->display->display_options['filters']['field_version_drupal_value']['table'] = 'field_data_field_version_drupal';
+  $handler->display->display_options['filters']['field_version_drupal_value']['field'] = 'field_version_drupal_value';
+  $handler->display->display_options['filters']['field_version_drupal_value']['group'] = 1;
+  $handler->display->display_options['filters']['field_version_drupal_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_version_drupal_value']['expose']['operator_id'] = 'field_version_drupal_value_op';
+  $handler->display->display_options['filters']['field_version_drupal_value']['expose']['label'] = 'Versión de Drupal';
+  $handler->display->display_options['filters']['field_version_drupal_value']['expose']['operator'] = 'field_version_drupal_value_op';
+  $handler->display->display_options['filters']['field_version_drupal_value']['expose']['identifier'] = 'field_version_drupal_value';
+  $handler->display->display_options['filters']['field_version_drupal_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  $handler->display->display_options['path'] = 'sesiones';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Sesiones';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'main-menu';
+  $handler->display->display_options['menu']['context'] = 0;
+  $handler->display->display_options['menu']['context_only_inline'] = 0;
   $translatables['sesiones'] = array(
     t('Master'),
-    t('Sesiones propuestas'),
+    t('Sesiones'),
     t('más'),
     t('Aplicar'),
     t('Reiniciar'),
     t('Ordenar por'),
     t('Asc'),
     t('Desc'),
-    t('Elementos por página'),
-    t('- Todos -'),
-    t('Desplazamiento'),
-    t('« primera'),
-    t('‹ anterior'),
-    t('siguiente ›'),
-    t('última »'),
     t('Ponente'),
     t('Nivel experiencia'),
     t('Audiencia'),
     t('Versión de Drupal'),
     t('Page'),
+    t('Sesiones propuestas'),
+    t('Página'),
   );
   $export['sesiones'] = $view;
 
