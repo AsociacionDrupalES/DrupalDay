@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Content sesión feature.
+ */
+
+include_once 'content_sesion.features.inc';
