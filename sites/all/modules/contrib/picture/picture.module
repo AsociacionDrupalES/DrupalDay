@@ -1130,7 +1130,10 @@ function theme_picture_formatter_colorbox($variables) {
     }
 
     // Do not load picture automatically.
-    $colorbox = str_replace('span data-picture=""', 'span data-picture-lazy="lazy"', $colorbox);
+    $colorbox = str_replace('<picture', '<span lazyload="lazyload"', $colorbox);
+    $colorbox = str_replace('</picture>', '</span>', $colorbox);
+    $colorbox = str_replace(' srcset="', ' data-srcset="', $colorbox);
+
     $output = l($output, current_path(), $options) . $colorbox;
   }
   return $output;
@@ -1170,7 +1173,7 @@ function theme_picture($variables) {
 
   $sources = array();
   $output = array();
-  // If we know width and height we use them, if not we should get image info
+  // If we know width and height we use them, if not we should get image info.
   if (!empty($variables['width']) && !empty($variables['height'])) {
     $dimensions = array(
       'width' => $variables['width'],
@@ -1200,14 +1203,14 @@ function theme_picture($variables) {
         switch ($mapping_definition['mapping_type']) {
           case 'sizes':
             foreach (array_filter($mapping_definition['sizes_image_styles']) as $image_style_name) {
-
-              picture_get_image_dimensions($image_style_name, $dimensions);
+              $dimensions_clone = $dimensions;
+              picture_get_image_dimensions($image_style_name, $dimensions_clone);
               // Get mime type.
               //$derivative_mime_type = $mime_type;
               //$image_style->transformMimeType($derivative_mime_type);
               //$derivative_mime_types[] = $derivative_mime_type;
 
-              $srcset[$dimensions['width']] = _picture_image_style_url($image_style_name, $variables['uri']) . ' ' . $dimensions['width'] . 'w';
+              $srcset[$dimensions_clone['width']] = _picture_image_style_url($image_style_name, $variables['uri']) . ' ' . $dimensions_clone['width'] . 'w';
               $sizes = array_merge(explode(',', $mapping_definition['sizes']), $sizes);
             }
             break;
@@ -1257,24 +1260,39 @@ function theme_picture($variables) {
     $output[] = '<!--[if IE 9]><video style="display: none;"><![endif]-->';
     $output = array_merge($output, array_map('drupal_render', $sources));
     $output[] = '<!--[if IE 9]></video><![endif]-->';
+    $src = _picture_image_style_url($variables['style_name'], $variables['uri']);
 
-    // Fallback image.
-    picture_get_image_dimensions($variables['style_name'], $dimensions);
-    $srcset = array('uri' => _picture_image_style_url($variables['style_name'], $variables['uri']));
-    if (!empty($dimensions['width'])) {
-      $srcset['width'] = $dimensions['width'] . 'w';
-    }
-    $fallback_image = array(
-      '#theme' => 'image_srcset',
-      '#srcset' => array($srcset),
-    );
-
-    $fallback_image += array(
+    // Fallback image for < IE9.
+    $min_ie9_fallback = array(
+      '#theme' => 'image',
+      '#path' => $src,
       '#alt' => isset($attributes['alt']) ? $attributes['alt'] : '',
       '#title' => isset($attributes['title']) ? $attributes['title'] : '',
       '#attributes' => array_diff_key($attributes, array('alt' => '', 'title' => '')),
     );
-    $output[] = drupal_render($fallback_image);
+    $output[] = '<!--[if lt IE 9]>';
+    $output[] = drupal_render($min_ie9_fallback);
+    $output[] = '<![endif]-->';
+
+    // Fallback image for > IE8.
+    $srcset = array(
+      'uri' => $src,
+    );
+    $dimensions_clone = $dimensions;
+    picture_get_image_dimensions($variables['style_name'], $dimensions_clone);
+    if (!empty($dimensions_clone['width'])) {
+      $srcset['width'] = $dimensions_clone['width'] . 'w';
+    }
+    $plus_ie8_fallback = array(
+      '#theme' => 'image_srcset',
+      '#srcset' => array($srcset),
+      '#alt' => isset($attributes['alt']) ? $attributes['alt'] : '',
+      '#title' => isset($attributes['title']) ? $attributes['title'] : '',
+      '#attributes' => array_diff_key($attributes, array('alt' => '', 'title' => '')),
+    );
+    $output[] = '<!--[if !lt IE 9]><!-->';
+    $output[] = drupal_render($plus_ie8_fallback);
+    $output[] = '<!-- <![endif]-->';
 
     $output[] = '</picture>';
 

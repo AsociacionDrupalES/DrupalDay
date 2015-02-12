@@ -48,6 +48,7 @@ function flexslider_picture_schema() {
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
+        'default' => '',
       ),
     ),
     'primary key' => array('id'),
@@ -90,20 +91,27 @@ function flexslider_picture_schema_alter(&$schema) {
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
+        'default' => '',
       ),
     ),
   );
 }
 
+/**
+ * Add the 'fallback' column to the {flexslider_picture_optionset} table.
+ */
 function flexslider_picture_update_7001() {
-  db_add_field(
-    'flexslider_picture_optionset',
-    'fallback',
-    array(
-      'description' => 'The style machine name.',
-      'type' => 'varchar',
-      'length' => 255,
-      'not null' => TRUE,
-    )
-  );
+  if (!db_field_exists('flexslider_picture_optionset', 'fallback')) {
+    db_add_field(
+      'flexslider_picture_optionset',
+      'fallback',
+      array(
+        'description' => 'The style machine name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 }
