@@ -92,7 +92,7 @@ function mailchimp_signup_block_view($delta = '') {
   $signup = mailchimp_signup_load($delta);
   if ($signup) {
     $block = array(
-      'subject' => $signup->title,
+      'subject' => check_plain($signup->title),
       'content' => drupal_get_form('mailchimp_signup_subscribe_block_' . $signup->name . '_form', $signup, 'mailchimp_signup_block'),
     );
   }
@@ -167,7 +167,7 @@ function mailchimp_signup_entity_info() {
       'uri callback' => 'entity_class_uri',
       'fieldable' => FALSE,
       'exportable' => TRUE,
-      'label callback' => 'entity_class_label',
+      'label callback' => 'mailchimp_signup_entity_info_label',
       'module' => 'mailchimp_signup',
       'entity keys' => array(
         'id' => 'mcs_id',
@@ -195,6 +195,13 @@ function mailchimp_signup_entity_info() {
   );
 
   return $entities;
+}
+
+/**
+ * Entity label callback.
+ */
+function mailchimp_signup_entity_info_label($entity, $entity_type) {
+  return empty($entity) ? 'New MailChimp Signup' : $entity->title;
 }
 
 /**
@@ -244,7 +251,7 @@ function mailchimp_signup_forms($form_id, $args) {
 function mailchimp_signup_subscribe_form($form, &$form_state, $signup, $type) {
   $form['#attributes'] = array('class' => array('mailchimp-signup-subscribe-form'));
   $form['description'] = array(
-    '#markup' => $signup->settings['description'],
+    '#markup' => filter_xss($signup->settings['description']),
   );
   $form['mailchimp_lists'] = array('#tree' => TRUE);
   $lists = mailchimp_get_lists($signup->mc_lists);
@@ -255,7 +262,7 @@ function mailchimp_signup_subscribe_form($form, &$form_state, $signup, $type) {
   }
 
   $list = array();
-  if ($lists_count > 0) {
+  if ($lists_count > 1) {
     foreach ($lists as $list) {
       // Wrap in a div:
       $wrapper_key = 'mailchimp_' . $list['web_id'];
@@ -372,8 +379,8 @@ function mailchimp_signup_subscribe_form_submit($form, &$form_state) {
       $successes[] = $list_details[$list_id]['name'];
     }
   }
-  if (count($successes) && strlen($signup->settings['confirmation_message'])) {
-    drupal_set_message($signup->settings['confirmation_message'], 'status');
+  if (count($successes) && isset($signup->settings['confirmation_message']) && strlen($signup->settings['confirmation_message'])) {
+    drupal_set_message(check_plain($signup->settings['confirmation_message']), 'status');
   }
   if (!empty($signup->settings['destination'])) {
     $form_state['redirect'] = $signup->settings['destination'];

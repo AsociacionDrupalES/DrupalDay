@@ -25,7 +25,7 @@ function picture_file_formatter_info() {
 }
 
 /**
- * 'view callback' for hook_file_formatter_info().
+ * View callback for hook_file_formatter_info().
  */
 function picture_file_formatter_picture_view($file, $display, $langcode) {
   // Prevent PHP notices when trying to read empty files.
@@ -84,11 +84,13 @@ function picture_file_formatter_picture_view($file, $display, $langcode) {
     }
     $element = array(
       '#theme' => 'picture_formatter',
-      '#attached' => array('library' => array(
-        array('picture', 'matchmedia'),
-        array('picture', 'picturefill'),
-        array('picture', 'picture.ajax'),
-      )),
+      '#attached' => array(
+        'library' => array(
+          array('picture', 'matchmedia'),
+          array('picture', 'picturefill'),
+          array('picture', 'picture.ajax'),
+        ),
+      ),
       '#item' => array(
         'style_name' => $fallback_image_style,
         'path' => $file->uri,
@@ -106,7 +108,7 @@ function picture_file_formatter_picture_view($file, $display, $langcode) {
 }
 
 /**
- * 'settings callback' for hook_file_formatter_info().
+ * Settings callback for hook_file_formatter_info().
  */
 function picture_file_formatter_picture_settings($form, &$form_state, $settings) {
   $picture_group_options = array();

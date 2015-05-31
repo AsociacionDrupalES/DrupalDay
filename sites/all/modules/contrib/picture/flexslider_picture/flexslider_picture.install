@@ -4,6 +4,10 @@
  * @file
  * Install, update and schema hooks for the FlexSlider Picture module.
  */
+
+/**
+ * Implements hook_schema().
+ */
 function flexslider_picture_schema() {
   $schema = array();
   $schema['flexslider_picture_optionset'] = array(
@@ -23,7 +27,7 @@ function flexslider_picture_schema() {
         'type' => 'serial',
         'not null' => TRUE,
         'description' => 'The internal identifier.',
-        'no export' => TRUE, // Do not export database-only keys.
+        'no export' => TRUE,
       ),
       'flexslider_optionset' => array(
         'description' => 'The machine-readable option set name.',

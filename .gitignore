@@ -17,9 +17,6 @@ LICENSE.txt
 MAINTAINERS.txt
 README.txt
 PGRADE.txt
-web.config
-xmlrpc.php
-install.php
 
 # IDEs
 .idea

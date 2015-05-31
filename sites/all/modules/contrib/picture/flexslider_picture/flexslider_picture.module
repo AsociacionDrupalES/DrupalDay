@@ -56,7 +56,7 @@ function flexslider_picture_field_formatter_settings_form($field, $instance, $vi
 /**
  * Implements hook_field_formatter_settings_summary().
  *
- * Displays the summary of the set options of a flexslider formatted image field
+ * Displays the summary of the options of a flexslider formatted image field.
  */
 function flexslider_picture_field_formatter_settings_summary($field, $instance, $view_mode) {
   return flexslider_fields_field_formatter_settings_summary($field, $instance, $view_mode);
@@ -65,7 +65,7 @@ function flexslider_picture_field_formatter_settings_summary($field, $instance, 
 /**
  * Implements hook_field_formatter_view().
  *
- * Prepares a renderable array of images and adds the neccessary JS and CSS
+ * Prepares a renderable array of images and adds the neccessary JS and CSS.
  */
 function flexslider_picture_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = flexslider_fields_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display);
@@ -117,7 +117,7 @@ function flexslider_picture_form_ctools_export_ui_edit_item_form_alter(&$form, &
       '#states' => array(
         'visible' => array(
           ':input[name="image_style[imagestyle_type]"]' => array('value' => 'picture_mapping'),
-        )
+        ),
       ),
       '#weight' => -1,
     );
@@ -132,7 +132,7 @@ function flexslider_picture_form_ctools_export_ui_edit_item_form_alter(&$form, &
     else {
       $form['image_style']['mapping'] += array(
         '#type' => 'item',
-        '#markup' => t('There\'re no picture mappings defined, you\'ll have to !create them first.', array('!create' => l(t('create'), 'admin/config/media/picture'))),
+        '#markup' => t("There're no picture mappings defined, you'll have to !create them first.", array('!create' => l(t('create'), 'admin/config/media/picture'))),
       );
     }
     $image_styles = image_style_options(FALSE);
@@ -148,7 +148,7 @@ function flexslider_picture_form_ctools_export_ui_edit_item_form_alter(&$form, &
       '#states' => array(
         'visible' => array(
           ':input[name="image_style[imagestyle_type]"]' => array('value' => 'picture_mapping'),
-        )
+        ),
       ),
       '#default_value' => (!empty($form_state['item']->fallback)) ? $form_state['item']->fallback : '',
     );
@@ -185,7 +185,7 @@ function flexslider_picture_form_ctools_export_ui_edit_item_form_alter(&$form, &
       '#states' => array(
         'visible' => array(
           ':input[name$="image_style[colorboxEnabled]"]' => array('checked' => TRUE),
-        )
+        ),
       ),
     );
 
@@ -197,7 +197,11 @@ function flexslider_picture_form_ctools_export_ui_edit_item_form_alter(&$form, &
  * Submit callback.
  */
 function _flexslider_picture_ctools_export_ui_edit_item_form_submit($form, &$form_state) {
-  $fields = array_intersect_key($form_state['values']['image_style'], drupal_map_assoc(array('imagestyle_type', 'mapping', 'fallback')));
+  $fields = array_intersect_key($form_state['values']['image_style'], drupal_map_assoc(array(
+    'imagestyle_type',
+    'mapping',
+    'fallback',
+  )));
   $fields['flexslider_optionset'] = $form_state['values']['name'];
   db_merge('flexslider_picture_optionset')
     ->key(array('flexslider_optionset' => $form_state['values']['name']))
@@ -215,6 +219,7 @@ function _flexslider_picture_ctools_export_ui_edit_item_form_submit($form, &$for
 
 /**
  * Join callback.
+ *
  * @see flexslider_picture_schema_alter()
  */
 function flexslider_picture_join_callback(&$query, $schema, $join_schema) {

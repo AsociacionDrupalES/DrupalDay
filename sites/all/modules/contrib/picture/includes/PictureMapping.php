@@ -1,15 +1,25 @@
 <?php
 
+/**
+ * @file
+ * Picture Mapping class.
+ */
+
+/**
+ * Picture mapping class.
+ */
 class PictureMapping {
 
   /**
    * The picture mapping ID (machine name).
+   *
    * @var string
    */
   protected $machine_name;
 
   /**
    * The picture mapping label.
+   *
    * @var string
    */
   protected $label;
@@ -29,11 +39,12 @@ class PictureMapping {
   /**
    * Boolean flag, used internally.
    */
-  protected $_is_exporting = FALSE;
+  protected $isExporting = FALSE;
 
   /**
-   * Set data values based on schema
-   * @see picture_mapping_object_factory().
+   * Set data values based on schema.
+   *
+   * @see picture_mapping_object_factory()
    */
   public function setValues($schema, $data) {
     foreach ($schema['fields'] as $field => $info) {
@@ -47,7 +58,7 @@ class PictureMapping {
     }
 
     if (isset($schema['join'])) {
-      foreach ($schema['join'] as $join_key => $join) {
+      foreach ($schema['join'] as $join) {
         $join_schema = ctools_export_get_schema($join['table']);
         if (!empty($join['load'])) {
           foreach ($join['load'] as $field) {
@@ -58,7 +69,8 @@ class PictureMapping {
         }
       }
     }
-    foreach((array)$data as $field => $val) {
+
+    foreach ((array) $data as $field => $val) {
       $this->{$field} = $val;
     }
     $this->loadBreakpointGroup();
@@ -68,7 +80,7 @@ class PictureMapping {
   /**
    * Save the picture mapping.
    *
-   * @return
+   * @return false||int
    *   If the record insert or update failed, returns FALSE. If it succeeded,
    *   returns SAVED_NEW or SAVED_UPDATED, depending on the operation performed.
    */
@@ -77,8 +89,8 @@ class PictureMapping {
     $this->cleanMappings();
     $data = $this->toArray();
     if (isset($this->id) && $this->id) {
-       $update = array('id');
-       $data['id'] = $this->id;
+      $update = array('id');
+      $data['id'] = $this->id;
     }
     $return = drupal_write_record('picture_mapping', $data, $update);
     module_load_include('info.inc', 'field');
@@ -162,6 +174,9 @@ class PictureMapping {
     $this->mapping = $all_mappings;
   }
 
+  /**
+   * Clean mappings.
+   */
   protected function cleanMappings() {
     foreach ($this->mapping as $breakpoint => $multipliers) {
       foreach ($multipliers as $multiplier => $mapping_definition) {
@@ -171,10 +186,12 @@ class PictureMapping {
             unset($mapping_definition['sizes']);
             unset($mapping_definition['sizes_image_styles']);
             break;
+
           case 'image_style':
             unset($mapping_definition['sizes']);
             unset($mapping_definition['sizes_image_styles']);
             break;
+
           case 'sizes':
             unset($mapping_definition['image_style']);
             $mapping_definition['sizes_image_styles'] = array_filter($mapping_definition['sizes_image_styles']);
@@ -188,7 +205,7 @@ class PictureMapping {
   /**
    * Check if there are mappings.
    *
-   * @return boolean
+   * @return bool
    *    TRUE if this PictureMapping has mappings, FALSE otherwise.
    */
   public function hasMappings() {
@@ -207,7 +224,7 @@ class PictureMapping {
   /**
    * Check if a mapping definition is empty.
    *
-   * @return boolean
+   * @return bool
    *    TRUE if this mapping definition is considered empty, FALSE otherwise.
    */
   public static function isEmptyMappingDefinition($mapping_definition) {
@@ -218,6 +235,7 @@ class PictureMapping {
             return FALSE;
           }
           break;
+
         case 'image_style':
           if ($mapping_definition['image_style']) {
             return FALSE;
@@ -293,7 +311,7 @@ class PictureMapping {
   /**
    * Get the breakpoint group.
    *
-   * @return stdClass
+   * @return object
    *   The breakpoint group object.
    */
   public function getBreakpointGroup() {
@@ -308,15 +326,19 @@ class PictureMapping {
     switch ($name) {
       case 'machine_name':
         return $this->getMachineName();
+
       case 'label':
         return $this->label();
+
       case 'mapping':
         return $this->getMappings();
+
       case 'breakpoint_group':
-        if ($this->_is_exporting) {
+        if ($this->isExporting) {
           return $this->breakpoint_group;
         }
         return $this->getBreakpointGroup();
+
       default:
         return $this->{$name};
     }
@@ -330,15 +352,19 @@ class PictureMapping {
       case 'machine_name':
         $this->setMachineName($value);
         break;
+
       case 'label':
         $this->setLabel($value);
         break;
+
       case 'mapping':
         $this->setMappings($value);
         break;
+
       case 'breakpoint_group':
         $this->setBreakpointGroup($value);
         break;
+
       default:
         $this->{$name} = $value;
         break;
@@ -361,10 +387,11 @@ class PictureMapping {
   public function export($indent = '') {
     $this->cleanMappings();
     $this->breakpoint_group = $this->getBreakpointGroup() ? $this->getBreakpointGroup()->machine_name : $this->breakpoint_group;
-    $this->_is_exporting = TRUE;
+    $this->isExporting = TRUE;
     $export = ctools_export_object('picture_mapping', $this, $indent);
-    $this->_is_exporting = TRUE;
+    $this->isExporting = TRUE;
     $this->loadBreakpointGroup();
     return $export;
   }
+
 }

@@ -3,6 +3,7 @@
  * @file
  * Install/schema hooks for the picture module.
  */
+
 /**
  * Implements hook_schema().
  */
@@ -15,7 +16,7 @@ function picture_schema() {
         'type' => 'serial',
         'not null' => TRUE,
         'description' => 'The internal identifier for this mapping',
-        'no export' => TRUE, // do not export database only keys.
+        'no export' => TRUE,
       ),
       'label' => array(
         'type' => 'varchar',
@@ -44,7 +45,6 @@ function picture_schema() {
       ),
     ),
     'primary key' => array('id'),
-    // CTools exportable object definition
     'export' => array(
       'key' => 'machine_name',
       'key name' => 'machine_name',
@@ -72,7 +72,7 @@ function picture_schema() {
  */
 function picture_install() {
   module_load_include('admin.inc', 'picture');
-  _picture_update_to_file_entity_2();
+  variable_set('picture_updated_to_file_entity_2', _picture_update_to_file_entity_2());
 }
 
 /**
@@ -83,6 +83,29 @@ function picture_uninstall() {
   variable_del('picture_ckeditor_label');
   variable_del('picture_updated_to_file_entity_2');
   variable_del('picture_js_scope');
+  variable_del('picture_polyfill_version');
+  variable_del('picture_fallback_method');
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function picture_requirements($phase) {
+  $requirements = array();
+  if (module_exists('colorbox')) {
+    $t = get_t();
+    $info = system_get_info('module', 'colorbox');
+    $requirements['picture_colorbox'] = array(
+      'title' => $t('Picture: Colorbox module version.'),
+      'value' => $info['version'],
+      'severity' => REQUIREMENT_OK,
+    );
+    if (version_compare($info['version'], '7.x-2.5') < 0) {
+      $requirements['picture_colorbox']['description'] = $t('The Colorbox module must be version 7.x-2.5 or higher in order to work with the Picture module.');
+      $requirements['picture_colorbox']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+  return $requirements;
 }
 
 /**
@@ -99,7 +122,7 @@ function picture_update_7200() {
   ));
   variable_set('picture_ckeditor_mappings', variable_get('picture_ckeditor_groups', array()));
   variable_del('picture_ckeditor_groups');
-  // force a schema reset:
+  // Force a schema reset.
   drupal_get_schema('picture_mapping', TRUE);
 
   // Get old picture mappings from code.

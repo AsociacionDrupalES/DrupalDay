@@ -7,9 +7,9 @@ dependencies[] = picture
 dependencies[] = flexslider (2.x)
 dependencies[] = flexslider_fields (2.x)
 
-; Information added by Drupal.org packaging script on 2014-12-30
-version = "7.x-2.9"
+; Information added by Drupal.org packaging script on 2015-05-29
+version = "7.x-2.10"
 core = "7.x"
 project = "picture"
-datestamp = "1419930485"
+datestamp = "1432900393"
 

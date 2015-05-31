@@ -4,24 +4,20 @@
  * Define this Export UI plugin.
  */
 $plugin = array(
-  'schema' => 'picture_mapping',  // As defined in hook_schema().
-  'access' => 'administer pictures',  // Define a permission users must have to access these pages.
-  // Define the menu item.
+  'schema' => 'picture_mapping',
+  'access' => 'administer pictures',
   'menu' => array(
     'menu prefix' => 'admin/config/media',
     'menu item' => 'picture',
     'menu title' => 'Picture mappings',
     'menu description' => 'Manage picture mappings.',
   ),
-  // Define user interface texts.
   'title singular' => t('picture mapping'),
   'title plural' => t('picture mappings'),
   'title singular proper' => t('Picture mapping'),
   'title plural proper' => t('Picture mappings'),
-  // Define the names of the functions that provide the add/edit forms.
   'form' => array(
     'settings' => 'picture_mapping_form',
-    // 'submit' and 'validate' are also valid callbacks.
   ),
   'use wizard' => TRUE,
   'form info' => array(
