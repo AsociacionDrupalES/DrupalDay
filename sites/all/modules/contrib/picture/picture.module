@@ -173,6 +173,41 @@ function picture_library() {
           ),
         ),
       );
+
+      $libraries['lazysizes'] = array(
+        'title' => t('Lazyload for picture element'),
+        'version' => '1.0.1',
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/lazysizes/lazysizes.min.js' => array(
+            'type' => 'file',
+            // file has async, put before all files to prevent JS concatenation breaking
+            'weight' => -20,
+            'group' => JS_LIBRARY,
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+      );
+
+      $libraries['lazysizes_aspect_ratio'] = array(
+        'title' => t('Aspect ratio plugin for lazysizes'),
+        'version' => '1.0.1',
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/lazysizes/plugins/aspectratio/ls.aspectratio.min.js' => array(
+            'type' => 'file',
+            'weight' => -10,
+            'group' => JS_LIBRARY,
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+        'css' => array(
+          drupal_get_path('module', 'picture') . '/lazysizes/plugins/aspectratio/ls.aspectratio.css' => array(
+            'type' => 'file',
+            'media' => 'screen',
+          ),
+        ),
+      );
       break;
 
     case 'dev':
@@ -220,6 +255,42 @@ function picture_library() {
           ),
         ),
       );
+
+      $libraries['lazysizes'] = array(
+        'title' => t('Lazyload for picture element'),
+        'version' => '1.0.1',
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/lazysizes/lazysizes.js' => array(
+            'type' => 'file',
+            // file has async, put before all files to prevent JS concatenation breaking
+            'weight' => -20,
+            'group' => JS_LIBRARY,
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+      );
+
+
+      $libraries['lazysizes_aspect_ratio'] = array(
+        'title' => t('Aspect ratio plugin for lazysizes'),
+        'version' => '1.0.1',
+        'js' => array(
+          drupal_get_path('module', 'picture') . '/lazysizes/plugins/aspectratio/ls.aspectratio.js' => array(
+            'type' => 'file',
+            'weight' => -10,
+            'group' => JS_LIBRARY,
+            'need_jquery' => FALSE,
+            'async' => TRUE,
+          ),
+        ),
+        'css' => array(
+          drupal_get_path('module', 'picture') . '/lazysizes/plugins/aspectratio/ls.aspectratio.css' => array(
+            'type' => 'file',
+            'media' => 'screen',
+          ),
+        ),
+      );
       break;
   }
 
@@ -255,6 +326,8 @@ function picture_theme() {
         'attributes' => array(),
         'breakpoints' => array(),
         'timestamp' => NULL,
+        'lazyload' => NULL,
+        'lazyload_aspect_ratio' => NULL,
       ),
     ),
     'picture_formatter' => array(
@@ -263,6 +336,8 @@ function picture_theme() {
         'path' => NULL,
         'image_style' => NULL,
         'breakpoints' => array(),
+        'lazyload' => NULL,
+        'lazyload_aspect_ratio' => NULL,
       ),
     ),
     'picture_formatter_colorbox' => array(
@@ -283,6 +358,8 @@ function picture_theme() {
         'media' => NULL,
         'mime_type' => NULL,
         'sizes' => NULL,
+        'lazyload' => NULL,
+        'lazyload_aspect_ratio' => NULL,
       ),
     ),
     'image_srcset' => array(
@@ -323,6 +400,8 @@ function picture_field_formatter_info() {
       'settings' => array(
         'picture_mapping' => reset($mappings),
         'fallback_image_style' => '',
+        'lazyload' => '',
+        'lazyload_aspect_ratio' => '',
         'image_link' => '',
         'colorbox_settings' => array(
           'colorbox_group' => '',
@@ -342,6 +421,8 @@ function picture_field_formatter_info() {
       'sizes' => '',
       'image_styles' => array(),
       'fallback_image_style' => '',
+      'lazyload' => '',
+      'lazyload_aspect_ratio' => '',
       'image_link' => '',
       'colorbox_settings' => array(
         'colorbox_group' => '',
@@ -405,6 +486,28 @@ function picture_field_formatter_settings_picture_form($field, $instance, $setti
       PICTURE_EMPTY_IMAGE => t('Empty image'),
       PICTURE_ORIGINAL_IMAGE => t('Original image'),
     ),
+  );
+
+  $element['lazyload'] = array(
+    '#title' => t('Picture lazyload'),
+    '#description' => t('Image will be rendered when it appears in viewport, helps to optimize page load speed.'),
+    '#type' => 'checkbox',
+    '#default_value' => $settings['lazyload'] ? $settings['lazyload'] : FALSE ,
+  );
+
+  $element['lazyload_aspect_ratio'] = array(
+    '#title' => t('Keep aspect ratio'),
+    '#type' => 'checkbox',
+    '#description' => t('Preserve the space for the image being lazyloaded to avoid layout reflows. <br /> Image ratio is defined per breakpoint, make sure all images from srcset have the same ratio. <br />Output example: !example',
+      array('!example' => htmlentities('<source media="(...)" data-srcset="image_400x200.jpg x1, iamge_800x400.jpg x2, image_1200x600.jpg x3" data-aspectratio="2" />'))
+    ),
+    '#default_value' => !empty($settings['lazyload_aspect_ratio']),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="fields[field_image][settings_edit_form][settings][lazyload]"]' => array('checked' => TRUE),
+        ':input[name="fields[field_image][settings_edit_form][settings][fallback_image_style]"]' => array('value' => PICTURE_EMPTY_IMAGE),
+      )
+    )
   );
 
   $link_types = picture_link_types($instance);
@@ -559,6 +662,7 @@ function picture_field_formatter_settings_picture_sizes_formatter_form($field, $
   $element['sizes'] = array(
     '#title' => t('Sizes'),
     '#type' => 'textfield',
+    '#maxlength' => 1024,
     '#description' => t(
       'The value of the sizes attribute. See !link for more information.',
       array(
@@ -585,7 +689,10 @@ function picture_field_formatter_settings_picture_sizes_formatter_form($field, $
     '#title' => t('Fallback image style'),
     '#type' => 'select',
     '#default_value' => $settings['fallback_image_style'],
-    '#options' => $image_styles,
+    '#options' => $image_styles + array(
+        PICTURE_EMPTY_IMAGE => t('Empty image'),
+        PICTURE_ORIGINAL_IMAGE => t('Original image'),
+      ),
     '#required' => TRUE,
   );
 
@@ -746,7 +853,12 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
   // Check if the formatter involves a link.
   $image_link = $display['settings']['image_link'];
   if ($image_link == 'content') {
-    $uri = entity_uri($entity_type, $entity);
+    if (isset($entity->referencing_entity) && isset($entity->referencing_entity_type)) {
+      $uri = entity_uri($entity->referencing_entity_type, $entity->referencing_entity);
+    }
+    else {
+      $uri = entity_uri($entity_type, $entity);
+    }
   }
   elseif ($image_link == 'file') {
     $link_file = TRUE;
@@ -761,6 +873,9 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
         $link_values = $link_field[$language];
       }
     }
+    elseif (image_style_load($image_link)) {
+      $link_file = $image_link;
+    }
   }
   $fallback_image_style = $settings['fallback_image_style'];
 
@@ -774,7 +889,7 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
   if (isset($mapping_name) && !empty($mapping_name)) {
     $picture_mapping = picture_mapping_load($mapping_name);
     if (!$picture_mapping) {
-      trigger_error("Unable to load picture mapping $mapping_name.", E_USER_ERROR);
+      trigger_error(check_plain("Unable to load picture mapping $mapping_name."), E_USER_ERROR);
       return $element;
     }
   }
@@ -798,7 +913,7 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
     $formatter = 'picture_formatter_colorbox';
     $mappings = picture_mapping_load($display['settings']['colorbox_settings']['colorbox_group']);
     if (!$mappings) {
-      trigger_error("Unable to load picture mapping {$display['settings']['colorbox_settings']['colorbox_group']}.", E_USER_ERROR);
+      trigger_error(check_plain("Unable to load picture mapping {$display['settings']['colorbox_settings']['colorbox_group']}."), E_USER_ERROR);
       return $element;
     }
     $colorbox_breakpoints = picture_get_mapping_breakpoints($mappings, $colorbox_fallback_image_style);
@@ -807,7 +922,7 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
   foreach ($items as $delta => $item) {
     if (isset($link_file)) {
       $uri = array(
-        'path' => file_create_url($item['uri']),
+        'path' => $link_file === TRUE ? file_create_url($item['uri']) : image_style_url($link_file, $item['uri']),
         'options' => array(),
       );
     }
@@ -828,14 +943,24 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
         unset($uri);
       }
     }
+
+    $libraries = array(
+      array('picture', 'picturefill_head'),
+      array('picture', 'picturefill'),
+      array('picture', 'picture.ajax'),
+    );
+    if (!empty($settings['lazyload'])) {
+      $libraries[] = array('picture', 'lazysizes');
+
+      if (!empty($display['settings']['lazyload_aspect_ratio'])) {
+        $libraries[] = array('picture', 'lazysizes_aspect_ratio');
+      };
+
+    };
     $element[$delta] = array(
       '#theme' => $formatter,
       '#attached' => array(
-        'library' => array(
-          array('picture', 'picturefill_head'),
-          array('picture', 'picturefill'),
-          array('picture', 'picture.ajax'),
-        ),
+        'library' => $libraries,
       ),
       '#item' => $item,
       '#image_style' => $fallback_image_style,
@@ -843,6 +968,8 @@ function picture_field_formatter_picture_view($entity_type, $entity, $field, $in
       '#path' => isset($uri) ? $uri : '',
       '#colorbox_group' => $colorbox_breakpoints,
       '#colorbox_image_style' => $colorbox_fallback_image_style,
+      '#lazyload' => !empty($settings['lazyload']),
+      '#lazyload_aspect_ratio' => !empty($settings['lazyload_aspect_ratio']),
     );
 
     // Add css and js for colorbox.
@@ -975,12 +1102,15 @@ function picture_field_formatter_picture_sizes_formatter_view($entity_type, $ent
         $link_values = $link_field[$language];
       }
     }
+    elseif (image_style_load($image_link)) {
+      $link_file = $image_link;
+    }
   }
 
   foreach ($items as $delta => $item) {
     if (isset($link_file)) {
       $uri = array(
-        'path' => file_create_url($item['uri']),
+        'path' => $link_file === TRUE ? file_create_url($item['uri']) : image_style_url($link_file, $item['uri']),
         'options' => array(),
       );
     }
@@ -1038,10 +1168,19 @@ function theme_picture_formatter($variables) {
     '#uri' => $item['uri'],
     '#alt' => isset($item['alt']) ? $item['alt'] : '',
     '#attributes' => isset($item['attributes']) ? $item['attributes'] : NULL,
-    '#timestamp' => $item['timestamp'],
+    '#timestamp' => isset($item['timestamp']) ? $item['timestamp'] : NULL,
+    '#lazyload' => !empty($variables['lazyload']),
+    '#lazyload_aspect_ratio' => !empty($variables['lazyload_aspect_ratio']),
   );
   if (isset($item['title']) && drupal_strlen($item['title']) != 0) {
     $responsive_image['#title'] = $item['title'];
+  }
+  if (!empty($item['class'])) {
+    $class = (!empty($responsive_image['#attributes']['class'])) ? $responsive_image['#attributes']['class'] : array();
+    if (!is_array($class)) {
+      $class = array($class);
+    }
+    $responsive_image['#attributes']['class'] = $class + $item['class'];
   }
   if (is_array($variables['path']) && isset($variables['path']['path'])) {
     $path = $variables['path']['path'];
@@ -1057,13 +1196,46 @@ function theme_picture_formatter($variables) {
  * Theme pictue sizes formatter.
  */
 function theme_picture_sizes_formatter($variables) {
+  $output_method = variable_get('picture_img_sizes_output_method', 'picture_element');
   $variables['image_style'] = $variables['fallback_image_style'];
-  $variables['breakpoints'][BREAKPOINTS_SOURCE_TYPE_MODULE . '.picture.empty_srcset']['1x'] = array(
-    'mapping_type' => 'sizes',
-    'sizes' => $variables['sizes'],
-    'sizes_image_styles' => $variables['image_styles'],
-  );
-  return theme('picture_formatter', $variables);
+
+  if ($output_method == 'picture_element') {
+    $variables['breakpoints'][BREAKPOINTS_SOURCE_TYPE_MODULE . '.picture.empty_srcset']['1x'] = array(
+      'mapping_type' => 'sizes',
+      'sizes' => $variables['sizes'],
+      'sizes_image_styles' => $variables['image_styles'],
+      'lazyload' => !empty($variables['lazyload']),
+      'lazyload_aspect_ratio' => !empty($variables['lazyload_aspect_ratio']),
+    );
+    return theme('picture_formatter', $variables);
+  }
+
+  if ($output_method == 'img_srcset') {
+    $image = $variables['item'];
+
+    // Map image attributes
+    $variables['uri'] = image_style_path($variables['fallback_image_style'], $image['uri']);
+
+    if (!empty($image['alt'])) {
+      $variables['alt'] = $image['alt'];
+    }
+    if (!empty($image['title'])) {
+      $variables['title'] = $image['title'];
+    }
+
+    // Set up image source options
+    $variables['srcset'] = array();
+    foreach($variables['image_styles'] as $image_style) {
+      $image_style_uri = image_style_path($image_style, $image['uri']);
+      $image_style_info = image_get_info($image_style_uri);
+
+      $variables['srcset'][] = array(
+        'uri' => $image_style_uri,
+        'width' => $image_style_info['width'] . 'w',
+      );
+    }
+    return theme('image_srcset', $variables);
+  }
 }
 
 /**
@@ -1144,6 +1316,8 @@ function theme_picture_formatter_colorbox($variables) {
  * @ingroup themeable
  */
 function theme_picture(array $variables) {
+
+  $image_styles = image_styles();
   // Make sure that width and height are proper values.
   // If they exists we'll output them.
   // @see http://www.w3.org/community/respimg/2012/06/18/florians-compromise/
@@ -1216,11 +1390,24 @@ function theme_picture(array $variables) {
       // Sort srcset.
       ksort($srcset);
 
+      $aspect_ratio = '';
+      if (!empty($variables['lazyload_aspect_ratio']) && !empty($image_styles[$mapping_definition['image_style']])) {
+        $dimensions = array(
+          'width' => $variables['width'],
+          'height' => $variables['height'],
+        );
+        $dimensions = picture_get_image_dimensions($mapping_definition['image_style'], $dimensions);
+        // store as a string, JS plugin will do calculation
+        $aspect_ratio = $dimensions['width'] . '/' . $dimensions['height'];
+      }
+
       $sources[] = array(
         '#theme' => 'picture_source',
         '#srcset' => implode(', ', array_unique($srcset)),
         '#media' => $breakpoint->breakpoint,
         '#sizes' => implode(', ', array_unique($sizes)),
+        '#lazyload' => !empty($variables['lazyload']),
+        '#lazyload_aspect_ratio' => $aspect_ratio,
       );
     }
   }
@@ -1251,10 +1438,25 @@ function theme_picture(array $variables) {
     $output[] = '<!--[if IE 9]></video><![endif]-->';
     $src = _picture_image_style_url($variables['style_name'], $variables['uri'], $variables['timestamp']);
 
+    if (!empty($variables['lazyload'])) {
+      if (!isset($attributes['class'])) {
+        $attributes['class'] = array();
+      }
+      elseif (!is_array($attributes['class'])) {
+        $attributes['class'] = (array)$attributes['class'];
+      }
+      $attributes['class'][] = 'lazyload';
+    }
+
+    if (!empty($variables['lazyload_aspect_ratio'])) {
+      // img tag has to have data-aspectratio attribute even if its dummy placeholder
+      $attributes['data-aspectratio'] = '';
+    }
+
     if (variable_get('picture_fallback_method', 'src') === 'src') {
       $min_ie9_fallback = array(
-        '#theme' => 'image',
-        '#path' => $src,
+        '#theme' => 'image_srcset',
+        '#uri' => $src,
         '#alt' => isset($attributes['alt']) ? $attributes['alt'] : '',
         '#title' => isset($attributes['title']) ? $attributes['title'] : '',
         '#attributes' => array_diff_key($attributes, array('alt' => '', 'title' => '')),
@@ -1264,8 +1466,8 @@ function theme_picture(array $variables) {
     else {
       // Fallback image for < IE9.
       $min_ie9_fallback = array(
-        '#theme' => 'image',
-        '#path' => $src,
+        '#theme' => 'image_srcset',
+        '#uri' => $src,
         '#alt' => isset($attributes['alt']) ? $attributes['alt'] : '',
         '#title' => isset($attributes['title']) ? $attributes['title'] : '',
         '#attributes' => array_diff_key($attributes, array('alt' => '', 'title' => '')),
@@ -1395,9 +1597,16 @@ function theme_image_srcset(array $variables) {
  * @ingroup themeable
  */
 function theme_picture_source(array $variables) {
-  $attributes = array(
-    'srcset' => $variables['srcset'],
-  );
+
+  if (!empty($variables['lazyload'])) {
+    $attributes['data-srcset'] = $variables['srcset'];
+    if (!empty($variables['lazyload_aspect_ratio'])) {
+      $attributes['data-aspectratio'] = $variables['lazyload_aspect_ratio'];
+    }
+  }
+  else {
+    $attributes['srcset'] = $variables['srcset'];
+  }
 
   if (isset($variables['media']) && !empty($variables['media'])) {
     $attributes['media'] = $variables['media'];
@@ -1496,6 +1705,7 @@ function _picture_filter_prepare_image($image) {
   // Make sure the closing tag is right.
   $image = str_replace('/>', '>', $image);
   $image = str_replace('>', ' />', $image);
+  $image = str_replace("&nbsp;", '', $image);
   $image = htmlspecialchars($image);
 
   // Parse the tag as xml.
@@ -1508,7 +1718,15 @@ function _picture_filter_prepare_image($image) {
   }
 
   $fallback_image_style = '';
-  $mapping_id = isset($attributes['data-picture-mapping']) ? $attributes['data-picture-mapping'] : $attributes['data-picture-group'];
+  if (isset($attributes['data-picture-mapping'])) {
+    $mapping_id = $attributes['data-picture-mapping'];
+  }
+  elseif (isset($attributes['data-picture-group'])) {
+    $mapping_id = $attributes['data-picture-group'];
+  }
+  else {
+    $mapping_id = null;
+  }
   $mappings = picture_mapping_load($mapping_id);
   // Make sure we have valid mappings.
   if (empty($mappings)) {
@@ -1551,6 +1769,8 @@ function _picture_filter_prepare_image($image) {
       'data-picture-mapping' => $mapping_id,
     ) + $attributes,
     '#breakpoints' => $breakpoint_styles,
+    '#lazyload' => $picture_mappings[$mapping_id]['lazyload'],
+    '#lazyload_aspect_ratio' => $picture_mappings[$mapping_id]['lazyload_aspect_ratio'],
   );
   return $image_render_array;
 }
@@ -1588,6 +1808,14 @@ function picture_page_build(&$page) {
     if (array_key_exists($machine_name, $picture_mappings)) {
       if ($parameters['enabled'] == 1) {
         $mappings[] = array($picture_mappings[$machine_name], $machine_name);
+        if (!empty($ckeditor_mappings[$machine_name]['lazyload'])) {
+          drupal_add_library('picture', 'lazysizes');
+
+          if (!empty($ckeditor_mappings[$machine_name]['lazyload_aspect_ratio'])) {
+            drupal_add_library('picture', 'lazysizes_aspect_ratio');
+          };
+
+        };
       }
     }
   }
@@ -1859,6 +2087,12 @@ function picture_link_types($instance) {
       }
     }
   }
+
+  // Allow linking to a specific image style.
+  $image_styles = image_style_options(FALSE);
+  foreach ($image_styles as $image_style => $label) {
+    $link_types[$image_style] = t('Image style: @style', array('@style' => $label));
+  }
   return $link_types;
 }
 
@@ -1866,6 +2100,9 @@ function picture_link_types($instance) {
  * Picture mapping factory.
  */
 function picture_mapping_object_factory($schema, $data) {
+  if (!class_exists('PictureMapping')) {
+    module_load_include('php', 'picture', 'includes/PictureMapping');
+  }
   $mapping = new PictureMapping();
   $mapping->setValues($schema, $data);
   return $mapping;

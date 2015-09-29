@@ -24,7 +24,7 @@ function template_preprocess_flexslider_picture_list(array &$vars) {
     $fallback_image_style = $optionset->fallback;
     $mappings = picture_mapping_load($optionset->mapping);
     if (!$mappings) {
-      trigger_error("Unable to load picture mapping {$optionset->mapping}.", E_USER_ERROR);
+      trigger_error(check_plain("Unable to load picture mapping {$optionset->mapping}."), E_USER_ERROR);
       return;
     }
     $breakpoint_styles = picture_get_mapping_breakpoints($mappings, $fallback_image_style);
@@ -41,7 +41,7 @@ function template_preprocess_flexslider_picture_list(array &$vars) {
       $colorbox_fallback_image_style = $optionset->options['colorboxFallbackImageStyle'];
       $mappings = picture_mapping_load($optionset->options['colorboxImageStyle']);
       if (!$mappings) {
-        trigger_error("Unable to load picture mapping {$optionset->options['colorboxImageStyle']}.", E_USER_ERROR);
+        trigger_error(check_plain("Unable to load picture mapping {$optionset->options['colorboxImageStyle']}."), E_USER_ERROR);
         $optionset->options['colorboxEnabled'] = FALSE;
       }
       else {

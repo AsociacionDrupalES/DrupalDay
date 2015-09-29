@@ -14,6 +14,8 @@ function picture_file_formatter_info() {
     'default settings' => array(
       'picture_group' => '',
       'fallback_image_style' => '',
+      'lazyload' => '',
+      'lazyload_aspect_ratio' => '',
       'alt' => '',
       'title' => '',
     ),
@@ -47,7 +49,7 @@ function picture_file_formatter_picture_view($file, $display, $langcode) {
     $group_name = $display['settings']['picture_group'];
     $mappings = picture_mapping_load($group_name);
     if (!$mappings) {
-      trigger_error("Unable to load picture mapping $group_name.", E_USER_ERROR);
+      trigger_error(check_plain("Unable to load picture mapping $group_name."), E_USER_ERROR);
       return;
     }
     $breakpoint_styles = picture_get_mapping_breakpoints($mappings, $fallback_image_style);
@@ -82,14 +84,26 @@ function picture_file_formatter_picture_view($file, $display, $langcode) {
     elseif (isset($file->metadata['height'])) {
       $dimensions['height'] = $file->metadata['height'];
     }
+
+    $libraries = array(
+      array('picture', 'picturefill_head'),
+      array('picture', 'picturefill'),
+      array('picture', 'picture.ajax'),
+    );
+    if (!empty($display['settings']['lazyload'])) {
+      $libraries[] = array('picture', 'lazysizes');
+
+      if (!empty($display['settings']['lazyload_aspect_ratio'])) {
+        $libraries[] = array('picture', 'lazysizes_aspect_ratio');
+      };
+
+    };
+
+
     $element = array(
       '#theme' => 'picture_formatter',
       '#attached' => array(
-        'library' => array(
-          array('picture', 'matchmedia'),
-          array('picture', 'picturefill'),
-          array('picture', 'picture.ajax'),
-        ),
+        'library' => $libraries
       ),
       '#item' => array(
         'style_name' => $fallback_image_style,
@@ -101,6 +115,8 @@ function picture_file_formatter_picture_view($file, $display, $langcode) {
       '#image_style' => $fallback_image_style,
       '#breakpoints' => $breakpoint_styles,
       '#path' => '',
+      '#lazyload' => !empty($display['settings']['lazyload']),
+      '#lazyload_aspect_ratio' => !empty($display['settings']['lazyload_aspect_ratio']),
     );
 
     return $element;
@@ -136,7 +152,31 @@ function picture_file_formatter_picture_settings($form, &$form_state, $settings)
     '#type' => 'select',
     '#default_value' => $settings['fallback_image_style'],
     '#empty_option' => t('Automatic'),
-    '#options' => $image_styles,
+    '#options' => $image_styles + array(
+      PICTURE_EMPTY_IMAGE => t('Empty image'),
+    ),
+  );
+
+  $element['lazyload'] = array(
+    '#title' => t('Picture lazyload'),
+    '#type' => 'checkbox',
+    '#description' => t('Image will be rendered when it appears in viewport, helps to optimize page load speed.'),
+    '#default_value' => !empty($settings['lazyload']),
+  );
+
+  $element['lazyload_aspect_ratio'] = array(
+    '#title' => t('Keep aspect ratio'),
+    '#type' => 'checkbox',
+    '#description' => t('Preserve the space for the image being lazyloaded to avoid layout reflows. <br /> Image ratio is defined per breakpoint, make sure all images from srcset have the same ratio. <br />Output example: !example',
+      array('!example' => htmlentities('<source media="(...)" data-srcset="image_400x200.jpg x1, iamge_800x400.jpg x2, image_1200x600.jpg x3" data-aspectratio="2" />'))
+    ),
+    '#default_value' => !empty($settings['lazyload_aspect_ratio']),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="displays[file_picture][settings][lazyload]"]' => array('checked' => TRUE),
+        ':input[name="displays[file_picture][settings][fallback_image_style]"]' => array('value' => PICTURE_EMPTY_IMAGE),
+      )
+    )
   );
 
   $element['alt'] = array(
