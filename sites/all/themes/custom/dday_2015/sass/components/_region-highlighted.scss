@@ -1,0 +1,33 @@
+/**
+ * @file
+ * SMACSS Modules
+ *
+ * Region Highlighted styles.
+ */
+
+.region-highlighted__wrapper {
+  position: relative;
+}
+.region-highlighted {
+  position: relative;
+  display: none;
+  @include breakpoint($mobile) {
+    display: block;
+  }
+}
+/* Wrapping link for logo. */
+.region-highlighted__logo {
+  @include breakpoint($mobile) {
+    position: absolute;
+    top: 1em;
+    left: 74px;
+    z-index: 10;
+    margin: 0;
+    padding: 0;
+  }
+}
+/* Logo image. */
+.region-highlighted__logo-image {
+  max-height: 100%;
+  vertical-align: bottom;
+}
