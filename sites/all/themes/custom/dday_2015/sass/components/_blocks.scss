@@ -1,0 +1,220 @@
+/**
+ * @file
+ * SMACSS Modules
+ *
+ * Blocks styles.
+ */
+
+/**
+ * Blocks.
+ */
+
+/* Block wrapper. */
+.block {
+  margin-bottom: rhythm(1);
+}
+.region-sidebar-first {
+  margin-top: 5em;
+  .block {
+    margin-bottom: 3em;
+  }
+  .block__title {
+    color: $red;
+    line-height: 1em;
+  }
+}
+
+#block-search-form{
+  float: right;
+  overflow: hidden;
+  margin-top: 1em;;
+}
+#search-block-form {
+  position: relative;
+  float: right;
+  input.form-text {
+    padding: 0.5em 2em 0.5em 0.75em;
+  }
+  .form-actions {
+    position: absolute;
+    right: 0.5em;
+    top: 0.2em;
+    @include opacity(0.7);
+    &:hover {
+      @include opacity(0.5);
+    }
+    .form-submit {
+      background-color: transparent;
+    }
+  }
+}
+
+/* User login */
+#block-user-login {
+  float: left;
+  margin: 0.5em 0;
+  width: 40%;
+  .block__title {
+    display: none;
+  }
+  .form-item {
+    float: left;
+  }
+  label {
+    font-size: 0.7em;
+    line-height: 1em;
+  }
+  .form-type-textfield,
+  .form-type-password {
+    width: 9em;
+    margin: 0;
+  }
+  .item-list {
+    display: none;
+  }
+  .form-submit {
+    margin-top: 0.75em;
+    background-color: #999;
+    &:hover {
+      background-color: $red;
+    }
+  }
+}
+/* Flexslider home */
+#block-views-flexslider-home-block {
+  position: relative;
+  margin-bottom: 0;
+  overflow: hidden;
+  ul,
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .group-left {
+    position: relative;
+    padding: 0;
+    width: 100%;
+    img {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+      width: auto;
+    }
+  }
+  .group-right {
+    height: 400px;
+    left: 0;
+    padding: 0 20px 0 80px;
+    position: absolute;
+    width: 370px;
+    background: image-url('bg-slide.png') no-repeat top right transparent;
+  }
+  .field-name-field-slide-description {
+    padding-top: 2em;
+    text-transform: uppercase;
+    font-weight: 300;
+    p {
+      margin: 0;
+      line-height: 1.3em;
+    }
+  }
+  .node__title {
+    color: $red;
+    font-size: 3em;
+    line-height: 1em;
+    margin: 0;
+  }
+  .field-name-field-slide-enlace {
+    a {
+      color: #000;
+      font-size: 0.8em;
+      font-weight: 600;
+      &:after {
+        display: inline-block;
+        margin-left: 7px;
+        padding: 1px 0 4px 4px;
+        width: 10px;
+        height: 9px;
+        background-color: #000;
+        color: #fff;
+        content: '+';
+        font-size: 11px;
+        line-height: 11px;
+      }
+    }
+  }
+  /* Flexslider */
+  .flexslider {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: #000;
+    box-shadow: 0;
+  }
+  .flex-control-nav {
+    bottom: 0;
+  }
+  .flex-direction-nav {
+    a.flex-next,
+    a.flex-prev {
+      display: block;
+      overflow: hidden;
+      width: 25px;
+      height: 40px;
+      background: image-url('sprite.png') no-repeat left top transparent;
+      text-align: inherit;
+      text-indent: -1000px;
+      &:before {
+        content: '';
+        display: none;
+      }
+    }
+    a.flex-prev {
+      background-position: left -41px;
+    }
+  }
+}
+
+/* Add sesion block */
+#block-dday-add-sesion-block-dday-add-sesion-block {
+  .submit-sesion {
+    @include border-radius(3px);
+    display: block;
+    padding: 1em;
+    border: 2px solid $red;
+    background-color: transparent;
+    color: $red;
+    text-align: center;
+    text-decoration: none;
+    font-size: $h3-font-size;
+    &:hover {
+      background-color: $red;
+      color: #fff;
+    }
+  }
+}
+
+/* Mailchimp newsletter */
+#block-mailchimp-signup-newsletter {
+  overflow: hidden;
+  .form-item {
+    margin: 0.25em 0 0.5em 0;
+  }
+  .form-submit {
+    float: right;
+    margin-right: 1px;
+    background-color: $red;
+  }
+}
+
+/* Users list block */
+#block-views-comunidad-block {
+  overflow: hidden;
+}
+
+
+// Logo drupal day
+#block-block-3{
+  display: none;
+}
