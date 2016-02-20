@@ -85,6 +85,26 @@ function picture_uninstall() {
   variable_del('picture_js_scope');
   variable_del('picture_polyfill_version');
   variable_del('picture_fallback_method');
+  // Delete field formatter settings.
+  ctools_include('export');
+  $entity_info = entity_get_info('file');
+  $file_types = file_type_load_all();
+  $view_modes = array_keys($entity_info['view modes']);
+  $view_modes[] = 'default';
+  $formatters = array(
+    'file_picture',
+    'file_field_picture',
+    'file_picture_sizes_formatter',
+    'file_field_picture_sizes_formatter'
+  );
+  foreach ($file_types as $file_type) {
+    foreach ($view_modes as $view_mode) {
+      foreach ($formatters as $formatter) {
+        ctools_export_crud_delete('file_display', $file_type->type . '__' . $view_mode . '__' . $formatter);
+      }
+    }
+  }
+  file_info_cache_clear();
 }
 
 /**
@@ -185,7 +205,7 @@ function picture_update_7202() {
     $instances = field_read_instances(array('field_id' => $field['id']));
     foreach ($instances as $instance) {
       foreach ($instance['display'] as $view_mode => $view_mode_settings) {
-        if ($view_mode_settings['type'] == 'picture') {
+        if ($view_mode_settings['type'] == 'picture' && isset($instance['display'][$view_mode]['settings']['colorbox'])) {
           $colorbox_group = $instance['display'][$view_mode]['settings']['colorbox'];
           $instance['display'][$view_mode]['settings']['colorbox_settings'] = array(
             'colorbox_group' => $colorbox_group,

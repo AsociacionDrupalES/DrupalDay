@@ -1213,8 +1213,8 @@ function theme_picture_sizes_formatter($variables) {
   if ($output_method == 'img_srcset') {
     $image = $variables['item'];
 
-    // Map image attributes
-    $variables['uri'] = image_style_path($variables['fallback_image_style'], $image['uri']);
+    // Map image attributes.
+    $variables['uri'] = _picture_image_style_url($variables['fallback_image_style'], $image['uri']);
 
     if (!empty($image['alt'])) {
       $variables['alt'] = $image['alt'];
@@ -1223,15 +1223,25 @@ function theme_picture_sizes_formatter($variables) {
       $variables['title'] = $image['title'];
     }
 
-    // Set up image source options
+    // Set up image source options.
     $variables['srcset'] = array();
-    foreach($variables['image_styles'] as $image_style) {
-      $image_style_uri = image_style_path($image_style, $image['uri']);
-      $image_style_info = image_get_info($image_style_uri);
+    // Get the dimensions of the original image.
+    $image_info = image_get_info($image['uri']);
+    foreach ($variables['image_styles'] as $image_style) {
+      $image_style_uri = _picture_image_style_url($image_style, $image['uri']);
+      $dimensions = array(
+        'width' => $image_info['width'],
+        'height' => $image_info['height'],
+      );
+      // Let the the image style transform the dimensions. This way we avoid the
+      // performance cost of actually having to generate the derivative. The
+      // image style can transform the dimensions without the derivative having
+      // to exist.
+      $dimensions = picture_get_image_dimensions($image_style, $dimensions);
 
       $variables['srcset'][] = array(
         'uri' => $image_style_uri,
-        'width' => $image_style_info['width'] . 'w',
+        'width' => $dimensions['width'] . 'w',
       );
     }
     return theme('image_srcset', $variables);
@@ -1561,11 +1571,11 @@ function theme_image_srcset(array $variables) {
         }
         if (isset($src['width']) && !empty($src['width'])) {
           $source .= ' ' . $src['width'];
-          $key = $src['width'];
+          $key = (int) drupal_substr($src['width'], 0, -1);
         }
         elseif (isset($src['multiplier']) && !empty($src['multiplier'])) {
           $source .= ' ' . $src['multiplier'];
-          $key = $src['multiplier'];
+          $key = (int) ((float) drupal_substr($src['multiplier'], -1) * 100);
         }
         $srcsets[$key] = $source;
       }
@@ -1769,8 +1779,8 @@ function _picture_filter_prepare_image($image) {
       'data-picture-mapping' => $mapping_id,
     ) + $attributes,
     '#breakpoints' => $breakpoint_styles,
-    '#lazyload' => $picture_mappings[$mapping_id]['lazyload'],
-    '#lazyload_aspect_ratio' => $picture_mappings[$mapping_id]['lazyload_aspect_ratio'],
+    '#lazyload' => isset($picture_mappings[$mapping_id]['lazyload']) ? $picture_mappings[$mapping_id]['lazyload'] : FALSE,
+    '#lazyload_aspect_ratio' => isset($picture_mappings[$mapping_id]['lazyload_aspect_ratio']) ? $picture_mappings[$mapping_id]['lazyload_aspect_ratio'] : FALSE,
   );
   return $image_render_array;
 }

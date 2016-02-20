@@ -225,15 +225,15 @@ function picture_admin_settings() {
         '#type' => 'select',
         '#title' => t('Fallback image style'),
         '#options' => drupal_map_assoc(array_keys(image_styles())) + array(
-            PICTURE_EMPTY_IMAGE => t('Empty image')
-          ),
+          PICTURE_EMPTY_IMAGE => t('Empty image'),
+        ),
         '#default_value' => isset($ckeditor_mappings[$machine_name]) ? $ckeditor_mappings[$machine_name]['fallback'] : NULL,
       );
       $form[$machine_name]['lazyload'] = array(
         '#title' => t('Picture lazyload'),
         '#description' => t('Image will be rendered when it appears in viewport, helps to optimize page load speed.'),
         '#type' => 'checkbox',
-        '#default_value' => isset($ckeditor_mappings[$machine_name]) ? $ckeditor_mappings[$machine_name]['lazyload'] : 0,
+        '#default_value' => isset($ckeditor_mappings[$machine_name]['lazyload']) ? $ckeditor_mappings[$machine_name]['lazyload'] : 0,
       );
 
       $form[$machine_name]['lazyload_aspect_ratio'] = array(
@@ -242,13 +242,13 @@ function picture_admin_settings() {
         '#description' => t('Preserve the space for the image being lazyloaded to avoid layout reflows. <br /> Image ratio is defined per breakpoint, make sure all images from srcset have the same ratio. <br />Output example: !example',
           array('!example' => htmlentities('<source media="(...)" data-srcset="image_400x200.jpg x1, iamge_800x400.jpg x2, image_1200x600.jpg x3" data-aspectratio="2" />'))
         ),
-        '#default_value' => isset($ckeditor_mappings[$machine_name]) ? $ckeditor_mappings[$machine_name]['lazyload_aspect_ratio'] : 0,
+        '#default_value' => isset($ckeditor_mappings[$machine_name]['lazyload_aspect_ratio']) ? $ckeditor_mappings[$machine_name]['lazyload_aspect_ratio'] : 0,
         '#states' => array(
           'visible' => array(
             ':input[name="article_responsive_image[lazyload]"]' => array('checked' => TRUE),
             ':input[name="article_responsive_image[fallback]"]' => array('value' => PICTURE_EMPTY_IMAGE),
-          )
-        )
+          ),
+        ),
       );
     }
     $form['#tree'] = TRUE;
