@@ -10,6 +10,7 @@
 function footable_library() {
   // Locate the FooTables JS library (borrowed from DataTables module).
   $lib_path = NULL;
+  $libraries = array();
   if (file_exists(drupal_get_path('module', 'footable') . '/FooTable/js/footable.js')) {
     $lib_path = drupal_get_path('module', 'footable') . '/FooTable';
   }
@@ -113,7 +114,8 @@ function template_preprocess_footable_view(&$vars) {
     if (!empty($options['footable']['hide'][$column])) {
       // Breakpoint names are in the array keys, so false values need to be
       // filtered out, then the array_keys imploded.
-      $vars['data_hide'][$column] = implode(',', array_keys(array_filter($options['footable']['hide'][$column])));
+      $data_hide = array_keys(array_filter($options['footable']['hide'][$column]));
+      $vars['data_hide'][$column] = in_array('all', $data_hide) ? 'all' : implode(',', $data_hide);
     }
 
     // Create a second variable so we can easily find what fields we have and what the
@@ -292,7 +294,7 @@ function template_preprocess_footable_view(&$vars) {
   // Add FooTable classes and data attributes.
   $vars['classes_array'][] = 'footable';
   if (!empty($options['footable']['expand'])) {
-    $vars['data_class'][$options['footable']['expand']] = 'expand';
+    $vars['data_toggle'][$options['footable']['expand']] = 'true';
   }
   // Toggle icon style
   if (!empty($options['footable']['icon'])) {

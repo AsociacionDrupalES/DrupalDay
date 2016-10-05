@@ -25,7 +25,7 @@
     <thead>
       <tr>
         <?php foreach ($header as $field => $label): ?>
-          <th <?php if (!empty($data_class[$field])): print 'data-class="'. $data_class[$field] . '" '; endif; ?><?php if (!empty($data_hide[$field])): print 'data-hide="'. $data_hide[$field] . '" '; endif; ?><?php if ($header_classes[$field]): print 'class="'. $header_classes[$field] . '" '; endif; ?>>
+          <th <?php if (!empty($data_toggle[$field])): print 'data-toggle="'. $data_toggle[$field] . '" '; endif; ?><?php if (!empty($data_hide[$field])): print 'data-hide="'. $data_hide[$field] . '" '; endif; ?><?php if ($header_classes[$field]): print 'class="'. $header_classes[$field] . '" '; endif; ?>>
             <?php print $label; ?>
           </th>
         <?php endforeach; ?>

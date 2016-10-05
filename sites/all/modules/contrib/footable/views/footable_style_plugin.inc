@@ -100,8 +100,8 @@ class footable_style_plugin extends views_plugin_style_table {
         '#type' => 'checkboxes',
         '#multiple' => TRUE,
         '#title' => check_plain($column_label),
-        '#default_value' => isset($this->options['footable']['hide'][$column_name]) ? $this->options['footable']['hide'][$column_name] : array('phone' => 0, 'tablet' => 0),
-        '#options' => array('phone' => 'Phone', 'tablet' => 'Tablet'),
+        '#default_value' => isset($this->options['footable']['hide'][$column_name]) ? $this->options['footable']['hide'][$column_name] : array('all' => 0, 'phone' => 0, 'tablet' => 0),
+        '#options' => array('all' => 'All', 'phone' => 'Phone', 'tablet' => 'Tablet'),
       );
     }
   }

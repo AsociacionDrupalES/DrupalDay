@@ -6,7 +6,7 @@
 
 Drupal.behaviors.fooTable = {
   attach: function (context, settings) {
-    $('.footable').footable();
+    $('.footable', context).footable();
   }
 };
 

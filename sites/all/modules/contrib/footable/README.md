@@ -30,7 +30,8 @@ Usage section of the jQuery Multi README.txt file. Skip the step on "targeting"
 as the FooTable module includes the targeting code.
     2. Install and configure the [jQuery
 Update](https://drupal.org/project/jquery_update) module.
-3. Download the [FooTable jQuery plugin](https://github.com/bradvin/FooTable)
+3. Download the [FooTable jQuery plugin]
+(https://github.com/fooplugins/FooTable/archive/V2.0.1.4.zip)
 and place the resulting *FooTable* directory into the sites/all/libraries
 directory.
 4. Download the FooTable module and follow the instruction for [installing
