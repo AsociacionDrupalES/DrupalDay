@@ -96,10 +96,10 @@ function content_sesion_strongarm() {
           'weight' => '0',
         ),
         'path' => array(
-          'weight' => '9',
+          'weight' => '5',
         ),
         'redirect' => array(
-          'weight' => '8',
+          'weight' => '4',
         ),
       ),
       'display' => array(),
@@ -150,6 +150,13 @@ function content_sesion_strongarm() {
   $strongarm->name = 'node_submitted_sesion';
   $strongarm->value = 0;
   $export['node_submitted_sesion'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_node_sesion_pattern';
+  $strongarm->value = 'sesion/[node:title]';
+  $export['pathauto_node_sesion_pattern'] = $strongarm;
 
   return $export;
 }

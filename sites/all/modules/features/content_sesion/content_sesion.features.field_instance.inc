@@ -10,7 +10,7 @@
 function content_sesion_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-sesion-body'
+  // Exported field_instance: 'node-sesion-body'.
   $field_instances['node-sesion-body'] = array(
     'bundle' => 'sesion',
     'default_value' => NULL,
@@ -51,11 +51,11 @@ function content_sesion_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 6,
+      'weight' => 2,
     ),
   );
 
-  // Exported field_instance: 'node-sesion-field_audiencia'
+  // Exported field_instance: 'node-sesion-field_audiencia'.
   $field_instances['node-sesion-field_audiencia'] = array(
     'bundle' => 'sesion',
     'default_value' => NULL,
@@ -92,7 +92,7 @@ function content_sesion_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-sesion-field_estado_sesion'
+  // Exported field_instance: 'node-sesion-field_estado_sesion'.
   $field_instances['node-sesion-field_estado_sesion'] = array(
     'bundle' => 'sesion',
     'default_value' => array(
@@ -133,7 +133,7 @@ function content_sesion_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-sesion-field_files'
+  // Exported field_instance: 'node-sesion-field_files'.
   $field_instances['node-sesion-field_files'] = array(
     'bundle' => 'sesion',
     'deleted' => 0,
@@ -171,11 +171,11 @@ function content_sesion_field_default_field_instances() {
         'progress_indicator' => 'throbber',
       ),
       'type' => 'file_generic',
-      'weight' => 7,
+      'weight' => 6,
     ),
   );
 
-  // Exported field_instance: 'node-sesion-field_nivel_experiencia'
+  // Exported field_instance: 'node-sesion-field_nivel_experiencia'.
   $field_instances['node-sesion-field_nivel_experiencia'] = array(
     'bundle' => 'sesion',
     'default_value' => NULL,
@@ -212,7 +212,7 @@ function content_sesion_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-sesion-field_speaker'
+  // Exported field_instance: 'node-sesion-field_speaker'.
   $field_instances['node-sesion-field_speaker'] = array(
     'bundle' => 'sesion',
     'default_value' => NULL,
@@ -223,6 +223,7 @@ function content_sesion_field_default_field_instances() {
         'label' => 'inline',
         'module' => 'entityreference',
         'settings' => array(
+          'bypass_access' => FALSE,
           'link' => 1,
         ),
         'type' => 'entityreference_label',
@@ -255,7 +256,7 @@ function content_sesion_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-sesion-field_version_drupal'
+  // Exported field_instance: 'node-sesion-field_version_drupal'.
   $field_instances['node-sesion-field_version_drupal'] = array(
     'bundle' => 'sesion',
     'default_value' => NULL,

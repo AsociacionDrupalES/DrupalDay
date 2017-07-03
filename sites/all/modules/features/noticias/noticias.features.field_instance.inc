@@ -10,7 +10,7 @@
 function noticias_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'comment-comment_node_noticias-comment_body'
+  // Exported field_instance: 'comment-comment_node_noticias-comment_body'.
   $field_instances['comment-comment_node_noticias-comment_body'] = array(
     'bundle' => 'comment_node_noticias',
     'default_value' => NULL,
@@ -43,7 +43,7 @@ function noticias_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-noticias-body'
+  // Exported field_instance: 'node-noticias-body'.
   $field_instances['node-noticias-body'] = array(
     'bundle' => 'noticias',
     'default_value' => NULL,
@@ -87,7 +87,7 @@ function noticias_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-noticias-field_imagen'
+  // Exported field_instance: 'node-noticias-field_imagen'.
   $field_instances['node-noticias-field_imagen'] = array(
     'bundle' => 'noticias',
     'deleted' => 0,
@@ -118,6 +118,8 @@ function noticias_field_default_field_instances() {
           ),
           'fallback_image_style' => '',
           'image_link' => 'content',
+          'lazyload' => '',
+          'lazyload_aspect_ratio' => '',
           'picture_mapping' => 'image_teaser',
         ),
         'type' => 'picture',
