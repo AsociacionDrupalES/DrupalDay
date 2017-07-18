@@ -200,6 +200,9 @@
   overflow: hidden;
   .form-item {
     margin: 0.25em 0 0.5em 0;
+    input{
+      width: 100%;
+    }
   }
   .form-submit {
     float: right;

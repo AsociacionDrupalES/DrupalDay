@@ -378,14 +378,16 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 #block-mailchimp-signup-newsletter { overflow: hidden; }
 /* line 201, ../sass/components/_blocks.scss */
 #block-mailchimp-signup-newsletter .form-item { margin: 0.25em 0 0.5em 0; }
-/* line 204, ../sass/components/_blocks.scss */
+/* line 203, ../sass/components/_blocks.scss */
+#block-mailchimp-signup-newsletter .form-item input { width: 100%; }
+/* line 207, ../sass/components/_blocks.scss */
 #block-mailchimp-signup-newsletter .form-submit { float: right; margin-right: 1px; background-color: #069344; }
 
 /* Users list block */
-/* line 212, ../sass/components/_blocks.scss */
+/* line 215, ../sass/components/_blocks.scss */
 #block-views-comunidad-block { overflow: hidden; }
 
-/* line 218, ../sass/components/_blocks.scss */
+/* line 221, ../sass/components/_blocks.scss */
 #block-block-3 { display: none; }
 
 /** @file SMACSS Modules  Breadcrumb styles. */
