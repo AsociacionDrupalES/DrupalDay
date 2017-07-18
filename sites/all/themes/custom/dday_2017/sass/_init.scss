@@ -98,14 +98,12 @@ $font-title: $open-sans-condensed;
 // Colors, etc.
 //
 $main-base-color: #069344;
-// @todo remove the $red variable and chage to $main-base-color.
-$red: $main-base-color;
+$main-base-color-hover: darken($main-base-color, 5%);
 $green: #009245;
 $background: #f4f4f4;
 $grey-dark: #333;
 $grey: #999;
 $grey-light: #d4d4d4;
-$red-hover: rgba(193, 39, 45, 0.9);
 $white: #fff;
 
 // Classes

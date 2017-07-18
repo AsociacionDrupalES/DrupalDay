@@ -19,7 +19,7 @@
     margin-bottom: 3em;
   }
   .block__title {
-    color: $red;
+    color: $main-base-color;
     line-height: 1em;
   }
 }
@@ -76,7 +76,7 @@
     margin-top: 0.75em;
     background-color: #999;
     &:hover {
-      background-color: $red;
+      background-color: $main-base-color;
     }
   }
 }
@@ -120,7 +120,7 @@
     }
   }
   .node__title {
-    color: $red;
+    color: $main-base-color;
     font-size: 3em;
     line-height: 1em;
     margin: 0;
@@ -182,14 +182,14 @@
     @include border-radius(3px);
     display: block;
     padding: 1em;
-    border: 2px solid $red;
+    border: 2px solid $main-base-color;
     background-color: transparent;
-    color: $red;
+    color: $main-base-color;
     text-align: center;
     text-decoration: none;
     font-size: $h3-font-size;
     &:hover {
-      background-color: $red;
+      background-color: $main-base-color;
       color: #fff;
     }
   }
@@ -204,7 +204,7 @@
   .form-submit {
     float: right;
     margin-right: 1px;
-    background-color: $red;
+    background-color: $main-base-color;
   }
 }
 

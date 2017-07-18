@@ -82,12 +82,12 @@
   }
   .views-field-name {
     max-width: 80%;
-    border: 2px solid $red;
+    border: 2px solid $main-base-color;
     border-radius: 4px;
     padding: 2px 0 3px 0;
     line-height: 1em;
     &:hover {
-      background-color: $red;
+      background-color: $main-base-color;
       a {
         color: #fff;
         text-decoration: none;
@@ -95,7 +95,7 @@
     }
   }
   .more-link {
-    background-color: $red;
+    background-color: $main-base-color;
     border: 0 none;
     color: #fff;
     float: right;
@@ -123,11 +123,11 @@
     }
     .views-field-name {
       max-width: 80%;
-      border: 2px solid $red;
+      border: 2px solid $main-base-color;
       border-radius: 4px;
       padding: 2px 0 3px 0;
       &:hover {
-        background-color: $red;
+        background-color: $main-base-color;
         a {
           color: #fff;
           text-decoration: none;

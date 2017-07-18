@@ -806,7 +806,7 @@ ul.nice-menu-down li li.menuparent:hover { background: url('../images/arrow-righ
 /* line 163, ../sass/components/_navigation.scss */
 ul.nice-menu-down .menuparent .menu__item a { background-color: #069344; line-height: 1.5em; padding: 1em 2em; border-bottom: 1px dotted white; }
 /* line 168, ../sass/components/_navigation.scss */
-ul.nice-menu-down .menuparent .menu__item a:hover { background-color: rgba(193, 39, 45, 0.9); }
+ul.nice-menu-down .menuparent .menu__item a:hover { background-color: #057a39; }
 /* line 173, ../sass/components/_navigation.scss */
 ul.nice-menu-down li.menuparent { background: url('../images/arrow-down.png?1500417563') right center no-repeat transparent; /* LTR */ }
 /* line 175, ../sass/components/_navigation.scss */

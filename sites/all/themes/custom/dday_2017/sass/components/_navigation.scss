@@ -11,7 +11,7 @@
 #navigation {
   /* Sometimes you want to prevent overlapping with main div. */
   /* overflow: hidden; */
-  background: image-url('bg-menu.png') repeat-x center center $red;
+  background: image-url('bg-menu.png') repeat-x center center $main-base-color;
   .block {
     margin-bottom: 0;
     text-align: center;
@@ -161,12 +161,12 @@ ul.nice-menu-down {
       }
     }
     .menu__item a {
-      background-color: $red;
+      background-color: $main-base-color;
       line-height: 1.5em;
       padding: 1em 2em;
       border-bottom: 1px dotted white;
       &:hover {
-        background-color: $red-hover;
+        background-color: $main-base-color-hover;
     }
     }
   }

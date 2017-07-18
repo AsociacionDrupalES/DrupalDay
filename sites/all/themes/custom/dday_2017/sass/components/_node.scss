@@ -6,7 +6,7 @@
  */
 
 .node-teaser {
-  border-top: 5px solid $red;
+  border-top: 5px solid $main-base-color;
   .node__title {
     margin-top: 0.5em;
   }
@@ -19,7 +19,7 @@
     font-size: 0.9em;
     float: right;
     padding: 0.3em;
-    background-color: $red;
+    background-color: $main-base-color;
     border: 0 none;
     color: #fff;
     &:after {
