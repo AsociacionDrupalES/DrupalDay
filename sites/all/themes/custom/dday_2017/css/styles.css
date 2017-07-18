@@ -34,10 +34,10 @@ body { margin: 0; padding: 0; color: #333333; }
 
 /** Links  The order of link states are based on Eric Meyer's article: http://meyerweb.com/eric/thoughts/2007/06/11/who-ordered-the-link-states */
 /* line 138, ../sass/_normalize.scss */
-a:link { color: #c1272d; text-decoration: none; }
+a:link { color: #069344; text-decoration: none; }
 
 /* line 142, ../sass/_normalize.scss */
-a:visited { color: #c1272d; }
+a:visited { color: #069344; }
 
 /* line 145, ../sass/_normalize.scss */
 a:hover, a:focus { text-decoration: underline; }
@@ -301,7 +301,7 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 18, ../sass/components/_blocks.scss */
 .region-sidebar-first .block { margin-bottom: 3em; }
 /* line 21, ../sass/components/_blocks.scss */
-.region-sidebar-first .block__title { color: #c1272d; line-height: 1em; }
+.region-sidebar-first .block__title { color: #069344; line-height: 1em; }
 
 /* line 27, ../sass/components/_blocks.scss */
 #block-search-form { float: right; overflow: hidden; margin-top: 1em; }
@@ -333,7 +333,7 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 75, ../sass/components/_blocks.scss */
 #block-user-login .form-submit { margin-top: 0.75em; background-color: #999; }
 /* line 78, ../sass/components/_blocks.scss */
-#block-user-login .form-submit:hover { background-color: #c1272d; }
+#block-user-login .form-submit:hover { background-color: #069344; }
 
 /* Flexslider home */
 /* line 84, ../sass/components/_blocks.scss */
@@ -345,13 +345,13 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 98, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .group-left img { display: block; margin-right: auto; margin-left: auto; width: auto; }
 /* line 105, ../sass/components/_blocks.scss */
-#block-views-flexslider-home-block .group-right { height: 400px; left: 0; padding: 0 20px 0 80px; position: absolute; width: 370px; background: url('../images/bg-slide.png?1412923425') no-repeat top right transparent; }
+#block-views-flexslider-home-block .group-right { height: 400px; left: 0; padding: 0 20px 0 80px; position: absolute; width: 370px; background: url('../images/bg-slide.png?1500417563') no-repeat top right transparent; }
 /* line 113, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .field-name-field-slide-description { padding-top: 2em; text-transform: uppercase; font-weight: 300; }
 /* line 117, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .field-name-field-slide-description p { margin: 0; line-height: 1.3em; }
 /* line 122, ../sass/components/_blocks.scss */
-#block-views-flexslider-home-block .node__title { color: #c1272d; font-size: 3em; line-height: 1em; margin: 0; }
+#block-views-flexslider-home-block .node__title { color: #069344; font-size: 3em; line-height: 1em; margin: 0; }
 /* line 129, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .field-name-field-slide-enlace a { color: #000; font-size: 0.8em; font-weight: 600; }
 /* line 133, ../sass/components/_blocks.scss */
@@ -361,7 +361,7 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 155, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .flex-control-nav { bottom: 0; }
 /* line 159, ../sass/components/_blocks.scss */
-#block-views-flexslider-home-block .flex-direction-nav a.flex-next, #block-views-flexslider-home-block .flex-direction-nav a.flex-prev { display: block; overflow: hidden; width: 25px; height: 40px; background: url('../images/sprite.png?1412923425') no-repeat left top transparent; text-align: inherit; text-indent: -1000px; }
+#block-views-flexslider-home-block .flex-direction-nav a.flex-next, #block-views-flexslider-home-block .flex-direction-nav a.flex-prev { display: block; overflow: hidden; width: 25px; height: 40px; background: url('../images/sprite.png?1500417563') no-repeat left top transparent; text-align: inherit; text-indent: -1000px; }
 /* line 168, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .flex-direction-nav a.flex-next:before, #block-views-flexslider-home-block .flex-direction-nav a.flex-prev:before { content: ''; display: none; }
 /* line 173, ../sass/components/_blocks.scss */
@@ -369,9 +369,9 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 
 /* Add sesion block */
 /* line 181, ../sass/components/_blocks.scss */
-#block-dday-add-sesion-block-dday-add-sesion-block .submit-sesion { -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; display: block; padding: 1em; border: 2px solid #c1272d; background-color: transparent; color: #c1272d; text-align: center; text-decoration: none; font-size: 18.72px; }
+#block-dday-add-sesion-block-dday-add-sesion-block .submit-sesion { -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; display: block; padding: 1em; border: 2px solid #069344; background-color: transparent; color: #069344; text-align: center; text-decoration: none; font-size: 18.72px; }
 /* line 191, ../sass/components/_blocks.scss */
-#block-dday-add-sesion-block-dday-add-sesion-block .submit-sesion:hover { background-color: #c1272d; color: #fff; }
+#block-dday-add-sesion-block-dday-add-sesion-block .submit-sesion:hover { background-color: #069344; color: #fff; }
 
 /* Mailchimp newsletter */
 /* line 199, ../sass/components/_blocks.scss */
@@ -379,7 +379,7 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 201, ../sass/components/_blocks.scss */
 #block-mailchimp-signup-newsletter .form-item { margin: 0.25em 0 0.5em 0; }
 /* line 204, ../sass/components/_blocks.scss */
-#block-mailchimp-signup-newsletter .form-submit { float: right; margin-right: 1px; background-color: #c1272d; }
+#block-mailchimp-signup-newsletter .form-submit { float: right; margin-right: 1px; background-color: #069344; }
 
 /* Users list block */
 /* line 212, ../sass/components/_blocks.scss */
@@ -517,7 +517,7 @@ tr.selected td { background: #ffc; }
 /* line 250, ../sass/components/_forms.scss */
 .progress .bar { background: #ccc; border-color: #666; margin: 0 0.2em; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
 /* line 256, ../sass/components/_forms.scss */
-.progress .filled { background-color: #0072b9; background-image: url('../images/progress.gif?1412923425'); }
+.progress .filled { background-color: #0072b9; background-image: url('../images/progress.gif?1500417563'); }
 
 /** @file SMACSS Modules  Header styles. */
 /** Branding header. */
@@ -567,9 +567,9 @@ tr.selected td { background: #ffc; }
 .view-colaboradores .field-content { text-align: center; }
 
 /* line 26, ../sass/components/_home.sass */
-#block-dday-register-block-dday-register-block .dday-register-block { background-color: transparent; border: 2px solid #c1272d; border-radius: 3px; color: #c1272d; display: block; font-size: 18.72px; padding: 1em; text-align: center; text-decoration: none; }
+#block-dday-register-block-dday-register-block .dday-register-block { background-color: transparent; border: 2px solid #069344; border-radius: 3px; color: #069344; display: block; font-size: 18.72px; padding: 1em; text-align: center; text-decoration: none; }
 /* line 36, ../sass/components/_home.sass */
-#block-dday-register-block-dday-register-block .dday-register-block:hover { background-color: #c1272d; color: white; }
+#block-dday-register-block-dday-register-block .dday-register-block:hover { background-color: #069344; color: white; }
 
 /* line 43, ../sass/components/_home.sass */
 .view-home-page .views-row, .view-noticias .views-row { margin-bottom: 1em; }
@@ -664,7 +664,7 @@ html { background-color: #f4f4f4; }
 
 /** Titles. */
 /* line 137, ../sass/components/_misc.scss */
-.page__title { color: #c1272d; margin: 1.5em 0 0.75em 0; }
+.page__title { color: #069344; margin: 1.5em 0 0.75em 0; }
 
 /* line 141, ../sass/components/_misc.scss */
 .node__title, .block__title, .comments__title, .comments__form-title, .comment__title { /* Comment title. */ margin: 0; }
@@ -741,7 +741,7 @@ span.field-label { padding: 0 1em 0 0; }
 /** @file SMACSS Modules  Navigation styles. */
 /** Navigation bar. */
 /* line 11, ../sass/components/_navigation.scss */
-#navigation { /* Sometimes you want to prevent overlapping with main div. */ /* overflow: hidden; */ background: url('../images/bg-menu.png?1412923425') repeat-x center center #c1272d; /* Main menu and secondary menu links and menu block links. */ }
+#navigation { /* Sometimes you want to prevent overlapping with main div. */ /* overflow: hidden; */ background: url('../images/bg-menu.png?1500417563') repeat-x center center #069344; /* Main menu and secondary menu links and menu block links. */ }
 /* line 15, ../sass/components/_navigation.scss */
 #navigation .block { margin-bottom: 0; text-align: center; }
 /* line 26, ../sass/components/_navigation.scss */
@@ -796,31 +796,31 @@ ul.nice-menu-down li ul li ul { left: 12.5em; /* LTR */ top: -1px; }
 /* line 144, ../sass/components/_navigation.scss */
 ul.nice-menu-down li li { border-top: 0; }
 /* line 147, ../sass/components/_navigation.scss */
-ul.nice-menu-down li li.menuparent { background: url('../images/arrow-right.png?1412923425') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li li.menuparent { background: url('../images/arrow-right.png?1500417563') right center no-repeat transparent; /* LTR */ }
 /* line 149, ../sass/components/_navigation.scss */
-ul.nice-menu-down li li.menuparent:hover { background: url('../images/arrow-right.png?1412923425') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li li.menuparent:hover { background: url('../images/arrow-right.png?1500417563') right center no-repeat transparent; /* LTR */ }
 @media (min-width: 30.05em) { /* line 155, ../sass/components/_navigation.scss */
   ul.nice-menu-down .menuparent a { padding-right: 1em; } }
 @media (min-width: 46em) { /* line 155, ../sass/components/_navigation.scss */
   ul.nice-menu-down .menuparent a { padding-right: 1.5em; /* LTR */ } }
 /* line 163, ../sass/components/_navigation.scss */
-ul.nice-menu-down .menuparent .menu__item a { background-color: #c1272d; line-height: 1.5em; padding: 1em 2em; border-bottom: 1px dotted white; }
+ul.nice-menu-down .menuparent .menu__item a { background-color: #069344; line-height: 1.5em; padding: 1em 2em; border-bottom: 1px dotted white; }
 /* line 168, ../sass/components/_navigation.scss */
 ul.nice-menu-down .menuparent .menu__item a:hover { background-color: rgba(193, 39, 45, 0.9); }
 /* line 173, ../sass/components/_navigation.scss */
-ul.nice-menu-down li.menuparent { background: url('../images/arrow-down.png?1412923425') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li.menuparent { background: url('../images/arrow-down.png?1500417563') right center no-repeat transparent; /* LTR */ }
 /* line 175, ../sass/components/_navigation.scss */
-ul.nice-menu-down li.menuparent:hover { background: url('../images/arrow-down.png?1412923425') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li.menuparent:hover { background: url('../images/arrow-down.png?1500417563') right center no-repeat transparent; /* LTR */ }
 
 /** @file SMACSS Modules  Node styles. */
 /* line 8, ../sass/components/_node.scss */
-.node-teaser { border-top: 5px solid #c1272d; }
+.node-teaser { border-top: 5px solid #069344; }
 /* line 10, ../sass/components/_node.scss */
 .node-teaser .node__title { margin-top: 0.5em; }
 /* line 14, ../sass/components/_node.scss */
 .node-teaser .field-name-body p { margin: 0.75em 0; }
 /* line 18, ../sass/components/_node.scss */
-.node-teaser .field-name-node-link a { font-size: 0.9em; float: right; padding: 0.3em; background-color: #c1272d; border: 0 none; color: #fff; }
+.node-teaser .field-name-node-link a { font-size: 0.9em; float: right; padding: 0.3em; background-color: #069344; border: 0 none; color: #fff; }
 /* line 25, ../sass/components/_node.scss */
 .node-teaser .field-name-node-link a:after { content: '+'; padding: 0 0.3em 0 1em; }
 
@@ -844,7 +844,7 @@ ul.nice-menu-down li.menuparent:hover { background: url('../images/arrow-down.pn
 @media (max-width: 630px) { /* line 1, ../sass/components/_tables.sass */
   #table-session { font-size: 78%; } }
 /* line 5, ../sass/components/_tables.sass */
-#table-session thead th { background: #c1272d; color: white; font-size: 18px; padding: 10px; }
+#table-session thead th { background: #069344; color: white; font-size: 18px; padding: 10px; }
 /* line 10, ../sass/components/_tables.sass */
 #table-session thead th:first-child { border-top-left-radius: 8px; }
 /* line 12, ../sass/components/_tables.sass */
@@ -856,7 +856,7 @@ ul.nice-menu-down li.menuparent:hover { background: url('../images/arrow-down.pn
 /* line 24, ../sass/components/_tables.sass */
 #table-session tbody tr td.taller { background-color: #d4d4d4; }
 /* line 26, ../sass/components/_tables.sass */
-#table-session tbody tr td:first-child { background: #c1272d; border: none; color: white; font-weight: bold; min-width: 100px; padding: 15px; border-top: 1px solid white; }
+#table-session tbody tr td:first-child { background: #069344; border: none; color: white; font-weight: bold; min-width: 100px; padding: 15px; border-top: 1px solid white; }
 @media (max-width: 630px) { /* line 26, ../sass/components/_tables.sass */
   #table-session tbody tr td:first-child { padding: 5; min-width: 0; } }
 /* line 37, ../sass/components/_tables.sass */
@@ -947,13 +947,13 @@ a.tabs-secondary__tab-link:active, a.tabs-secondary__tab-link.is-active { text-s
 /* line 78, ../sass/components/_views.scss */
 .view-comunidad .field-content img { display: block; margin: 0 auto; }
 /* line 83, ../sass/components/_views.scss */
-.view-comunidad .views-field-name { max-width: 80%; border: 2px solid #c1272d; border-radius: 4px; padding: 2px 0 3px 0; line-height: 1em; }
+.view-comunidad .views-field-name { max-width: 80%; border: 2px solid #069344; border-radius: 4px; padding: 2px 0 3px 0; line-height: 1em; }
 /* line 89, ../sass/components/_views.scss */
-.view-comunidad .views-field-name:hover { background-color: #c1272d; }
+.view-comunidad .views-field-name:hover { background-color: #069344; }
 /* line 91, ../sass/components/_views.scss */
 .view-comunidad .views-field-name:hover a { color: #fff; text-decoration: none; }
 /* line 97, ../sass/components/_views.scss */
-.view-comunidad .more-link { background-color: #c1272d; border: 0 none; color: #fff; float: right; padding: 0.2em 0.5em 0.3em; }
+.view-comunidad .more-link { background-color: #069344; border: 0 none; color: #fff; float: right; padding: 0.2em 0.5em 0.3em; }
 /* line 103, ../sass/components/_views.scss */
 .view-comunidad .more-link a { color: #fff; }
 /* line 108, ../sass/components/_views.scss */
@@ -963,9 +963,9 @@ a.tabs-secondary__tab-link:active, a.tabs-secondary__tab-link.is-active { text-s
 /* line 119, ../sass/components/_views.scss */
 .view-comunidad.view-display-id-page .views-row { margin: 1em auto; padding-bottom: 1em; width: 19%; }
 /* line 124, ../sass/components/_views.scss */
-.view-comunidad.view-display-id-page .views-field-name { max-width: 80%; border: 2px solid #c1272d; border-radius: 4px; padding: 2px 0 3px 0; }
+.view-comunidad.view-display-id-page .views-field-name { max-width: 80%; border: 2px solid #069344; border-radius: 4px; padding: 2px 0 3px 0; }
 /* line 129, ../sass/components/_views.scss */
-.view-comunidad.view-display-id-page .views-field-name:hover { background-color: #c1272d; }
+.view-comunidad.view-display-id-page .views-field-name:hover { background-color: #069344; }
 /* line 131, ../sass/components/_views.scss */
 .view-comunidad.view-display-id-page .views-field-name:hover a { color: #fff; text-decoration: none; }
 
