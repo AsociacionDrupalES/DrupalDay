@@ -40,7 +40,7 @@
     <div class="region-highlighted__wrapper">
       <?php print render($page['highlighted']); ?>
       <?php if ($logo): ?>
-        <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" class="region-highlighted__logo" id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" class="region-highlighted__logo-image" /></a>
+        <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" class="region-highlighted__logo" id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" class="region-highlighted__logo-image" style="max-width: 180px;"/></a>
       <?php endif; ?>
     </div>
 
