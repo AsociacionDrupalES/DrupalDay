@@ -345,7 +345,7 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 98, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .group-left img { display: block; margin-right: auto; margin-left: auto; width: auto; }
 /* line 105, ../sass/components/_blocks.scss */
-#block-views-flexslider-home-block .group-right { height: 400px; left: 0; padding: 0 20px 0 80px; position: absolute; width: 370px; background: url('../images/bg-slide.png?1500417563') no-repeat top right transparent; }
+#block-views-flexslider-home-block .group-right { height: 400px; left: 0; padding: 0 20px 0 80px; position: absolute; width: 370px; background: url('../images/bg-slide.png?1503994001') no-repeat top right transparent; }
 /* line 113, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .field-name-field-slide-description { padding-top: 2em; text-transform: uppercase; font-weight: 300; }
 /* line 117, ../sass/components/_blocks.scss */
@@ -361,7 +361,7 @@ table { /* Remove most spacing between table cells. */ border-collapse: collapse
 /* line 155, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .flex-control-nav { bottom: 0; }
 /* line 159, ../sass/components/_blocks.scss */
-#block-views-flexslider-home-block .flex-direction-nav a.flex-next, #block-views-flexslider-home-block .flex-direction-nav a.flex-prev { display: block; overflow: hidden; width: 25px; height: 40px; background: url('../images/sprite.png?1500417563') no-repeat left top transparent; text-align: inherit; text-indent: -1000px; }
+#block-views-flexslider-home-block .flex-direction-nav a.flex-next, #block-views-flexslider-home-block .flex-direction-nav a.flex-prev { display: block; overflow: hidden; width: 25px; height: 40px; background: url('../images/sprite.png?1503994001') no-repeat left top transparent; text-align: inherit; text-indent: -1000px; }
 /* line 168, ../sass/components/_blocks.scss */
 #block-views-flexslider-home-block .flex-direction-nav a.flex-next:before, #block-views-flexslider-home-block .flex-direction-nav a.flex-prev:before { content: ''; display: none; }
 /* line 173, ../sass/components/_blocks.scss */
@@ -519,7 +519,7 @@ tr.selected td { background: #ffc; }
 /* line 250, ../sass/components/_forms.scss */
 .progress .bar { background: #ccc; border-color: #666; margin: 0 0.2em; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
 /* line 256, ../sass/components/_forms.scss */
-.progress .filled { background-color: #0072b9; background-image: url('../images/progress.gif?1500417563'); }
+.progress .filled { background-color: #0072b9; background-image: url('../images/progress.gif?1503994001'); }
 
 /** @file SMACSS Modules  Header styles. */
 /** Branding header. */
@@ -743,7 +743,7 @@ span.field-label { padding: 0 1em 0 0; }
 /** @file SMACSS Modules  Navigation styles. */
 /** Navigation bar. */
 /* line 11, ../sass/components/_navigation.scss */
-#navigation { /* Sometimes you want to prevent overlapping with main div. */ /* overflow: hidden; */ background: url('../images/bg-menu.png?1500417563') repeat-x center center #069344; /* Main menu and secondary menu links and menu block links. */ }
+#navigation { /* Sometimes you want to prevent overlapping with main div. */ /* overflow: hidden; */ background: url('../images/bg-menu.png?1503994001') repeat-x center center #069344; /* Main menu and secondary menu links and menu block links. */ }
 /* line 15, ../sass/components/_navigation.scss */
 #navigation .block { margin-bottom: 0; text-align: center; }
 /* line 26, ../sass/components/_navigation.scss */
@@ -780,7 +780,7 @@ ul.nice-menu a { line-height: 3.4em; padding: 0.3em 2em 0.1em 2em; background-co
 @media (min-width: 46em) { /* line 99, ../sass/components/_navigation.scss */
   ul.nice-menu a { padding: 0.3em 0.6em 0.1em 0.6em; font-size: 1em; } }
 @media (min-width: 61.2em) { /* line 99, ../sass/components/_navigation.scss */
-  ul.nice-menu a { padding: 0.3em 2em 0.1em 2em; } }
+  ul.nice-menu a { padding: 0.3em 1.7em 0.1em; } }
 /* line 119, ../sass/components/_navigation.scss */
 ul.nice-menu ul li { width: 18em; font-size: 0.9em; }
 
@@ -798,9 +798,9 @@ ul.nice-menu-down li ul li ul { left: 12.5em; /* LTR */ top: -1px; }
 /* line 144, ../sass/components/_navigation.scss */
 ul.nice-menu-down li li { border-top: 0; }
 /* line 147, ../sass/components/_navigation.scss */
-ul.nice-menu-down li li.menuparent { background: url('../images/arrow-right.png?1500417563') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li li.menuparent { background: url('../images/arrow-right.png?1503994001') right center no-repeat transparent; /* LTR */ }
 /* line 149, ../sass/components/_navigation.scss */
-ul.nice-menu-down li li.menuparent:hover { background: url('../images/arrow-right.png?1500417563') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li li.menuparent:hover { background: url('../images/arrow-right.png?1503994001') right center no-repeat transparent; /* LTR */ }
 @media (min-width: 30.05em) { /* line 155, ../sass/components/_navigation.scss */
   ul.nice-menu-down .menuparent a { padding-right: 1em; } }
 @media (min-width: 46em) { /* line 155, ../sass/components/_navigation.scss */
@@ -810,9 +810,9 @@ ul.nice-menu-down .menuparent .menu__item a { background-color: #069344; line-he
 /* line 168, ../sass/components/_navigation.scss */
 ul.nice-menu-down .menuparent .menu__item a:hover { background-color: #057a39; }
 /* line 173, ../sass/components/_navigation.scss */
-ul.nice-menu-down li.menuparent { background: url('../images/arrow-down.png?1500417563') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li.menuparent { background: url('../images/arrow-down.png?1503994001') right center no-repeat transparent; /* LTR */ }
 /* line 175, ../sass/components/_navigation.scss */
-ul.nice-menu-down li.menuparent:hover { background: url('../images/arrow-down.png?1500417563') right center no-repeat transparent; /* LTR */ }
+ul.nice-menu-down li.menuparent:hover { background: url('../images/arrow-down.png?1503994001') right center no-repeat transparent; /* LTR */ }
 
 /** @file SMACSS Modules  Node styles. */
 /* line 8, ../sass/components/_node.scss */
