@@ -18,5 +18,5 @@
       - '127.0.0.1:6081'
 
   roles:
-    - role: carlosbuenosvinos.ansistrano-deploy
+    - role: ansistrano.deploy
 
