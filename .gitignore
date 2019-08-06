@@ -7,3 +7,4 @@ sites/*/private
 
 # Idea
 .idea
+drush/config.local.php
