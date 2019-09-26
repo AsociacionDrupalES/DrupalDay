@@ -1,0 +1,429 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap");
+html {
+  background-color: #f4f4f4;
+}
+
+body {
+  max-width: 100%;
+  color: #333;
+  font-size: 16px;
+  font-family: "Open Sans", sans-serif;
+  line-height: 1.5em;
+  padding: 0;
+  margin: 0;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+h1, h2 {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+a {
+  display: inline-block;
+  color: #333;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+}
+
+a:hover, a:active {
+  color: #da291c;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+.element-invisible,
+#skip-link {
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.form-type-textfield > label,
+.form-type-password > label,
+.form-type-textarea > label {
+  display: block;
+  color: #999;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.form-type-textfield input,
+.form-type-password input,
+.form-type-textarea input {
+  color: #999999;
+  font-size: 13px;
+  background-color: transparent;
+  border: 1px solid #999;
+  border-radius: 3px;
+  outline: none;
+  transition: all .4s;
+  padding: 0.5em;
+}
+
+.form-type-textfield input:focus,
+.form-type-password input:focus,
+.form-type-textarea input:focus {
+  background: white;
+}
+
+.header,
+.main__content,
+.footer__content,
+.navigation__content {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+  .header,
+  .main__content,
+  .footer__content,
+  .navigation__content {
+    max-width: 1200px;
+  }
+}
+
+#header, #content, #navigation, .region-sidebar-first, .region-sidebar-second, #footer {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.header__region {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+@media (min-width: 992px) {
+  .header__region {
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+}
+
+.header__region .block-user, .header__region .block-search {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .header__region .block-user, .header__region .block-search {
+    width: 50%;
+  }
+}
+
+.region-highlighted__wrapper {
+  position: relative;
+}
+
+.region-highlighted__logo {
+  z-index: 10;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 1em;
+  left: 74px;
+}
+
+#navigation {
+  background: url("../images/bg-menu.png") repeat-x center center #da291c;
+}
+
+#navigation::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.main__content::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+@media (min-width: 992px) {
+  .main__content #content {
+    width: 80%;
+    float: left;
+    margin-left: 0;
+    margin-right: -80%;
+  }
+}
+
+.main__content .region-sidebar-first {
+  margin-top: 5em;
+}
+
+@media (min-width: 992px) {
+  .main__content .region-sidebar-first {
+    width: 20%;
+    float: left;
+    margin-left: 80%;
+    margin-right: -100%;
+  }
+}
+
+.block-nice-menus {
+  text-align: center;
+}
+
+.block-nice-menus ul.nice-menu {
+  padding: 0;
+  margin: 0;
+}
+
+.block-nice-menus ul.nice-menu li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.block-nice-menus ul.nice-menu li {
+  display: inline-block;
+  background-color: transparent;
+  float: none;
+  border: 0;
+}
+
+.block-nice-menus ul.nice-menu li.menuparent {
+  background: url("../images/arrow-down.png") right center no-repeat transparent;
+}
+
+.block-nice-menus ul.nice-menu li.menuparent:hover {
+  background: url("../images/arrow-down.png") right center no-repeat transparent;
+}
+
+.block-nice-menus ul.nice-menu li.menuparent ul {
+  border: none;
+  top: 4em;
+  left: 0;
+}
+
+.block-nice-menus ul.nice-menu li.menuparent ul .menu__item a {
+  font-size: 0.875em;
+  line-height: 1.5em;
+  background: #da291c;
+  border-bottom: 1px dotted white;
+  padding: 1em 2em;
+}
+
+.block-nice-menus ul.nice-menu li.menuparent ul .menu__item a:hover {
+  background: #c82218;
+}
+
+.block-nice-menus ul.nice-menu li:hover {
+  background: transparent;
+}
+
+.block-nice-menus ul.nice-menu li a {
+  color: #fff;
+  font-size: 1em;
+  line-height: 3.4em;
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  padding: 0.3em 2em 0.1em 2em;
+}
+
+@media (min-width: 992px) {
+  .block-nice-menus ul.nice-menu li a {
+    padding: 0.3em 1.7em 0.3em;
+  }
+}
+
+#block-user-login > h2 {
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+#search-block-form {
+  text-align: right;
+}
+
+#search-block-form .container-inline {
+  display: inline-block;
+  position: relative;
+}
+
+#search-block-form .form-item {
+  display: inline-block;
+}
+
+#search-block-form .form-item .form-text {
+  padding: 0.5em 2em 0.5em 0.75em;
+}
+
+#search-block-form .form-actions {
+  opacity: 0.7;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+  position: absolute;
+  right: 0.5em;
+  top: 0.3em;
+}
+
+#user-login-form > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+#user-login-form > div > .form-item {
+  order: 1;
+}
+
+@media (min-width: 992px) {
+  #user-login-form > div > .form-item {
+    margin-right: 7px;
+  }
+}
+
+#user-login-form > div .item-list {
+  width: 100%;
+  order: 3;
+}
+
+#user-login-form > div .item-list ul {
+  padding: 0;
+  margin: 0;
+}
+
+#user-login-form > div .item-list ul li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#user-login-form > div .item-list ul li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+#user-login-form > div .item-list ul li:last-child {
+  margin-right: 0;
+}
+
+#user-login-form > div .item-list ul li a {
+  font-size: 14px;
+}
+
+#user-login-form > div .form-actions {
+  order: 2;
+}
+
+#user-login-form > div .form-actions input[type="submit"] {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+  color: white;
+  background: #999;
+  padding: 0.3em;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  font-size: 16px;
+}
+
+#user-login-form > div .form-actions input[type="submit"]:hover, #user-login-form > div .form-actions input[type="submit"]:focus, #user-login-form > div .form-actions input[type="submit"]:active {
+  box-shadow: none;
+}
+
+#user-login-form > div .form-actions input[type="submit"]:hover, #user-login-form > div .form-actions input[type="submit"]:focus, #user-login-form > div .form-actions input[type="submit"]:active {
+  background: #da291c;
+}
+
+.view-flexslider-home .view-content .flexslider {
+  background: black;
+  box-shadow: none;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides {
+  padding: 0;
+  margin: 0;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides .group-left {
+  max-height: 400px;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides .group-left img {
+  display: inline-block;
+  width: 100%;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides .group-right {
+  max-width: 530px;
+  width: 100%;
+  height: 400px;
+  background: url("../images/bg-slide.png") no-repeat top right transparent;
+  padding: 200px 20px 0 80px;
+  position: absolute;
+  left: 0;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides .group-right .node__title {
+  color: #da291c;
+  font-size: 3em;
+  line-height: 1em;
+  margin: 0;
+}
+
+.view-flexslider-home .view-content .flexslider ul.slides .group-right .field-name-field-slide-enlace a {
+  color: black;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.view-flexslider-home .view-content .flexslider .flex-direction-nav .flex-prev {
+  background-position: left -41px;
+}
+
+.view-flexslider-home .view-content .flexslider .flex-direction-nav a {
+  display: block;
+  overflow: hidden;
+  width: 25px;
+  height: 40px;
+  background: url("../images/sprite.png") no-repeat left top transparent;
+  text-align: inherit;
+  text-indent: -1000px;
+}
+
+.view-flexslider-home .view-content .flexslider .flex-control-nav {
+  bottom: 0;
+}
+
+/*# sourceMappingURL=styles.css.map */
