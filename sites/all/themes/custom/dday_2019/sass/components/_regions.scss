@@ -1,0 +1,80 @@
+.header,
+.main__content,
+.footer__content,
+.navigation__content {
+  @include container;
+}
+
+#header, #content, #navigation, .region-sidebar-first, .region-sidebar-second, #footer {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.header__region {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 0;
+
+  @media (min-width: $desk) {
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .block-user, .block-search {
+    width: 100%;
+
+    @media (min-width: $desk) {
+      width: 50%;
+    }
+
+  }
+
+}
+
+.region-highlighted__wrapper {
+  position: relative;
+}
+
+.region-highlighted__logo {
+  z-index: 10;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 1em;
+  left: 74px;
+}
+
+#navigation {
+  @include clearfix;
+  background: url(image-url("bg-menu.png")) repeat-x center center $color-red-a;
+}
+
+.main__content {
+  @include clearfix;
+
+  #content {
+
+    @media (min-width: $desk) {
+      width: 80%;
+      float: left;
+      margin-left: 0;
+      margin-right: -80%;
+    }
+
+  }
+
+  .region-sidebar-first {
+    margin-top: 5em;
+
+    @media (min-width: $desk) {
+      width: 20%;
+      float: left;
+      margin-left: 80%;
+      margin-right: -100%;
+    }
+
+  }
+
+}

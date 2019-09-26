@@ -1,0 +1,90 @@
+@mixin container {
+  max-width: 100%;
+  margin: 0 auto;
+
+  @media (min-width: $desk) {
+    max-width: $max-width;
+  }
+
+}
+
+@mixin hidden {
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin btn {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+
+  &:hover, &:focus, &:active {
+    box-shadow: none;
+  }
+
+}
+
+@mixin btn-grey {
+  @include btn;
+  color: white;
+  background: $color-grey-b;
+  padding: 0.3em;
+
+  &:hover, &:focus, &:active {
+    background: $color-red-a;
+  }
+
+}
+
+@mixin btn-light-grey {
+  @include btn;
+  border-radius: 3px;
+  display: block;
+  padding: 1em;
+  border: 2px solid #069344;
+  background-color: transparent;
+  color: #069344;
+  text-align: center;
+  text-decoration: none;
+  font-size: 18.72px;
+
+  &:hover, &:focus, &:active {
+
+  }
+
+}
+
+@mixin list-reset {
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+}
+
+// Images
+//////////////////////////////
+$image_base_path: "../images/";
+// Replacement form image-url()
+@function image-url($img) {
+  @return $image_base_path + $img;
+}
+
+@mixin clearfix() {
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
