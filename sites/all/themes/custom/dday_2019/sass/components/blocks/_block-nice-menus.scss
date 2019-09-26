@@ -1,0 +1,63 @@
+.block-nice-menus {
+  text-align: center;
+
+  ul.nice-menu {
+    @include list-reset;
+
+    li {
+      display: inline-block;
+      background-color: transparent;
+      float: none;
+      border: 0;
+
+      // Primary items with sublevel.
+      &.menuparent {
+        background: url(image-url("arrow-down.png")) right center no-repeat transparent;
+
+        &:hover {
+          background: url(image-url("arrow-down.png")) right center no-repeat transparent;
+        }
+
+        ul {
+          border: none;
+          top: 4em;
+          left: 0;
+
+          .menu__item a {
+            font-size: 0.875em;
+            line-height: 1.5em;
+            background: $color-red-a;
+            border-bottom: 1px dotted white;
+            padding: 1em 2em;
+
+            &:hover {
+              background: $color-red-b;
+            }
+
+          }
+        }
+
+      }
+
+      &:hover {
+        background: transparent;
+      }
+
+      a {
+        color: #fff;
+        font-size: 1em;
+        line-height: 3.4em;
+        background: transparent;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        padding: 0.3em 2em 0.1em 2em;
+
+        @media (min-width: $desk) {
+          padding: 0.3em 1.7em 0.3em;
+        }
+
+      }
+    }
+  }
+
+}

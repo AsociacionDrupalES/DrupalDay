@@ -1,0 +1,59 @@
+#user-login-form {
+
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+
+    > .form-item {
+      order: 1;
+
+      @media (min-width: $desk) {
+        margin-right: 7px;
+      }
+
+    }
+
+    .item-list {
+      width: 100%;
+      order: 3;
+
+      ul {
+        @include list-reset;
+
+        li {
+          display: inline-block;
+          margin-right: 20px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+
+          a {
+            font-size: 14px;
+          }
+
+        }
+      }
+
+    }
+
+    .form-actions {
+      order: 2;
+
+      @media (min-width: $desk) {
+
+      }
+
+      input[type="submit"] {
+        @include btn-grey;
+        display: flex;
+        align-items: center;
+        min-height: 30px;
+        font-size: 16px;
+      }
+
+    }
+  }
+
+}
