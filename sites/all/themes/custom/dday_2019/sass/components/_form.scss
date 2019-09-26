@@ -1,0 +1,28 @@
+.form-type-textfield,
+.form-type-password,
+.form-type-textarea {
+
+  > label {
+    display: block;
+    color: $color-grey-b;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  input {
+    color: #999999;
+    font-size: 13px;
+    background-color: transparent;
+    border: 1px solid $color-grey-b;
+    border-radius: 3px;
+    outline: none;
+    transition: all .4s;
+    padding: 0.5em;
+
+    &:focus {
+      background: white;
+    }
+
+  }
+
+}
