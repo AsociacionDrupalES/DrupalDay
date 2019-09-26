@@ -63,16 +63,33 @@
       margin-right: -80%;
     }
 
+    .column__content {
+
+      @media (min-width: $desk) {
+        padding-right: 15%;
+      }
+
+    }
+
   }
 
   .region-sidebar-first {
-    margin-top: 5em;
 
     @media (min-width: $desk) {
       width: 20%;
       float: left;
+      margin-top: 6.1em;
       margin-left: 80%;
       margin-right: -100%;
+    }
+
+    .block {
+      margin-bottom: 3em;
+    }
+
+    .block__title {
+      color: $color-red-a;
+      line-height: 1em;
     }
 
   }

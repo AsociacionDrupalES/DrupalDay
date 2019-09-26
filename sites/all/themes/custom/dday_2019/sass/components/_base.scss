@@ -22,6 +22,10 @@ h1, h2 {
   text-transform: uppercase;
 }
 
+h2 {
+  font-size: 1.5em;
+}
+
 a {
   display: inline-block;
   color: $color-black-a;
@@ -40,6 +44,10 @@ img {
   max-width: 100%;
   height: auto;
   vertical-align: top;
+}
+
+.node__title, .block__title, .comments__title, .comments__form-title, .comment__title {
+  margin: 0;
 }
 
 .element-invisible,
