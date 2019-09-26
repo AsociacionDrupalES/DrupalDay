@@ -1,0 +1,14 @@
+#mailchimp-signup-subscribe-block-newsletter-form {
+
+  .form-actions {
+    text-align: right;
+    margin-top: 8px;
+
+    input[type="submit"] {
+      @include btn-red;
+      font-size: 16px;
+    }
+
+  }
+
+}

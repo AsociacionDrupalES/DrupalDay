@@ -22,6 +22,10 @@ h1, h2 {
   text-transform: uppercase;
 }
 
+h2 {
+  font-size: 1.5em;
+}
+
 a {
   display: inline-block;
   color: #333;
@@ -39,6 +43,10 @@ img {
   max-width: 100%;
   height: auto;
   vertical-align: top;
+}
+
+.node__title, .block__title, .comments__title, .comments__form-title, .comment__title {
+  margin: 0;
 }
 
 .element-invisible,
@@ -62,6 +70,7 @@ img {
 .form-type-textfield input,
 .form-type-password input,
 .form-type-textarea input {
+  max-width: 100%;
   color: #999999;
   font-size: 13px;
   background-color: transparent;
@@ -163,17 +172,109 @@ img {
   }
 }
 
-.main__content .region-sidebar-first {
-  margin-top: 5em;
+@media (min-width: 992px) {
+  .main__content #content .column__content {
+    padding-right: 15%;
+  }
 }
 
 @media (min-width: 992px) {
   .main__content .region-sidebar-first {
     width: 20%;
     float: left;
+    margin-top: 6.1em;
     margin-left: 80%;
     margin-right: -100%;
   }
+}
+
+.main__content .region-sidebar-first .block {
+  margin-bottom: 3em;
+}
+
+.main__content .region-sidebar-first .block__title {
+  color: #da291c;
+  line-height: 1em;
+}
+
+.block-dday-add-sesion-block {
+  margin-bottom: 3em;
+}
+
+.block-dday-add-sesion-block .button {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+  display: block;
+  color: #da291c;
+  font-size: 18.72px;
+  text-align: center;
+  text-decoration: none;
+  background-color: transparent;
+  border: 2px solid #da291c;
+  border-radius: 3px;
+  padding: 1em;
+}
+
+.block-dday-add-sesion-block .button:hover, .block-dday-add-sesion-block .button:focus, .block-dday-add-sesion-block .button:active {
+  box-shadow: none;
+}
+
+.block-dday-add-sesion-block .button:hover, .block-dday-add-sesion-block .button:focus, .block-dday-add-sesion-block .button:active {
+  color: #fff;
+  background-color: #da291c;
+}
+
+#block-block-2 .block__title {
+  margin-bottom: 15px;
+}
+
+#block-block-2 > div {
+  margin-bottom: 10px;
+}
+
+#block-block-5 h2 > a {
+  color: #da291c;
+}
+
+#block-block-5 h2 > a:hover, #block-block-5 h2 > a:active {
+  text-decoration: underline;
+}
+
+.block-dday-register-block .button {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+  display: block;
+  color: #da291c;
+  font-size: 18.72px;
+  text-align: center;
+  text-decoration: none;
+  background-color: transparent;
+  border: 2px solid #da291c;
+  border-radius: 3px;
+  padding: 1em;
+}
+
+.block-dday-register-block .button:hover, .block-dday-register-block .button:focus, .block-dday-register-block .button:active {
+  box-shadow: none;
+}
+
+.block-dday-register-block .button:hover, .block-dday-register-block .button:focus, .block-dday-register-block .button:active {
+  color: #fff;
+  background-color: #da291c;
+}
+
+#block-mailchimp-signup-newsletter .block__title {
+  margin-bottom: 5px;
 }
 
 .block-nice-menus {
@@ -244,12 +345,55 @@ img {
   }
 }
 
+#block-system-powered-by a {
+  color: #da291c;
+}
+
+#block-system-powered-by a:hover, #block-system-powered-by a:active {
+  text-decoration: underline;
+}
+
 #block-user-login > h2 {
   height: 0;
   opacity: 0;
   visibility: hidden;
   margin: 0;
   padding: 0;
+}
+
+#block-views-comunidad-block .block__title {
+  margin-bottom: 15px;
+}
+
+.block {
+  margin-bottom: 1.5em;
+}
+
+#mailchimp-signup-subscribe-block-newsletter-form .form-actions {
+  text-align: right;
+  margin-top: 8px;
+}
+
+#mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"] {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+  color: white;
+  background: #da291c;
+  padding: 0.3em;
+  font-size: 16px;
+}
+
+#mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"]:hover, #mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"]:focus, #mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"]:active {
+  box-shadow: none;
+}
+
+#mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"]:hover, #mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"]:focus, #mailchimp-signup-subscribe-block-newsletter-form .form-actions input[type="submit"]:active {
+  background: #c82218;
 }
 
 #search-block-form {
@@ -351,6 +495,103 @@ img {
   background: #da291c;
 }
 
+.node-noticias.view-mode-teaser {
+  padding: 25px 0;
+}
+
+.node-noticias.view-mode-teaser .node__title a {
+  color: #da291c;
+}
+
+.node-noticias.view-mode-teaser .node__title a:hover, .node-noticias.view-mode-teaser .node__title a:active {
+  text-decoration: underline;
+}
+
+.node-noticias.view-mode-teaser .field-name-node-link {
+  text-align: right;
+}
+
+.node-noticias.view-mode-teaser .field-name-node-link a {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+  color: white;
+  background: #da291c;
+  padding: 0.3em;
+  font-size: 0.9em;
+  border: none;
+}
+
+.node-noticias.view-mode-teaser .field-name-node-link a:hover, .node-noticias.view-mode-teaser .field-name-node-link a:focus, .node-noticias.view-mode-teaser .field-name-node-link a:active {
+  box-shadow: none;
+}
+
+.node-noticias.view-mode-teaser .field-name-node-link a:hover, .node-noticias.view-mode-teaser .field-name-node-link a:focus, .node-noticias.view-mode-teaser .field-name-node-link a:active {
+  background: #c82218;
+}
+
+.node-noticias.view-mode-teaser .field-name-node-link a:after {
+  content: '+';
+  padding: 0 0.3em 0 1em;
+}
+
+.node-teaser {
+  border-top: 5px solid #da291c;
+}
+
+.node-teaser .field-name-body p {
+  margin: 0.75em 0;
+}
+
+.view-comunidad ul {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.view-comunidad ul li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.view-comunidad ul li {
+  width: 49%;
+}
+
+.view-comunidad .views-field-picture .field-content {
+  width: 70px;
+  height: 70px;
+}
+
+.view-comunidad .views-field-name {
+  line-height: 1em;
+  border: 2px solid #da291c;
+  border-radius: 4px;
+  padding: 2px 0 3px 0;
+}
+
+.view-comunidad .views-field-name a {
+  color: #da291c;
+}
+
+.view-comunidad .field-content {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.view-comunidad .field-content a {
+  display: block;
+  color: #da291c;
+  font-size: 12.24px;
+}
+
 .view-flexslider-home .view-content .flexslider {
   background: black;
   box-shadow: none;
@@ -424,6 +665,10 @@ img {
 
 .view-flexslider-home .view-content .flexslider .flex-control-nav {
   bottom: 0;
+}
+
+.front .column__content {
+  padding-top: 4.6em;
 }
 
 /*# sourceMappingURL=styles.css.map */

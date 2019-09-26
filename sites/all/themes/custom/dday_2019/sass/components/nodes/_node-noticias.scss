@@ -1,0 +1,37 @@
+.node-noticias {
+
+  // VM Teaser
+  &.view-mode-teaser {
+    padding: 25px 0;
+
+    .node__title {
+
+      a {
+        color: $color-red-a;
+
+        &:hover, &:active {
+          text-decoration: underline;
+        }
+
+      }
+
+    }
+
+    .field-name-node-link {
+      text-align: right;
+
+      a {
+        @include btn-red;
+        font-size: 0.9em;
+        border: none;
+
+        &:after {
+          content: '+';
+          padding: 0 0.3em 0 1em;
+        }
+
+      }
+    }
+  }
+
+}

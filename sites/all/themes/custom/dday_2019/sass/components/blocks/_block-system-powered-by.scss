@@ -1,0 +1,12 @@
+#block-system-powered-by {
+
+  a {
+    color: $color-red-a;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+
+  }
+
+}
