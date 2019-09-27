@@ -255,7 +255,7 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   padding: 10px 0;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .header__region {
     justify-content: space-between;
     align-items: center;
@@ -265,12 +265,14 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 
 .header__region .block-user, .header__region .block-search {
   width: 100%;
+  margin-bottom: 20px;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .header__region .block-user, .header__region .block-search {
     width: 50%;
     flex-grow: 2;
+    margin-bottom: 0;
   }
 }
 
@@ -400,13 +402,19 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 }
 
 .tabs-primary li {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
   text-shadow: 1px 1px 0 white;
   border: 1px solid #bbbbbb;
   border-bottom-color: transparent;
-  float: left;
+  float: none;
   margin: 0 3px;
+}
+
+@media (min-width: 768px) {
+  .tabs-primary li {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    float: left;
+  }
 }
 
 .tabs-primary li.tabs-primary__tab.is-active {
@@ -420,14 +428,21 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 }
 
 .tabs-primary li a {
+  display: block;
   color: #333;
   letter-spacing: 1px;
   text-align: center;
   background-color: #dedede;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
   transition: background-color 0.3s;
-  padding: 0 1em;
+  padding: .5em 1em;
+}
+
+@media (min-width: 768px) {
+  .tabs-primary li a {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 0 1em;
+  }
 }
 
 .tabs-primary li a:hover {
@@ -701,19 +716,23 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 }
 
 #user-login-form > div > .form-item {
-  order: 1;
-  margin: 0;
+  margin: 0 7px 0 0;
 }
 
 @media (min-width: 992px) {
   #user-login-form > div > .form-item {
-    margin-right: 7px;
+    order: 1;
   }
 }
 
 #user-login-form > div .item-list {
   width: 100%;
-  order: 3;
+}
+
+@media (min-width: 992px) {
+  #user-login-form > div .item-list {
+    order: 3;
+  }
 }
 
 #user-login-form > div .item-list ul {
@@ -740,8 +759,10 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   font-size: 14px;
 }
 
-#user-login-form > div .form-actions {
-  order: 2;
+@media (min-width: 992px) {
+  #user-login-form > div .form-actions {
+    order: 2;
+  }
 }
 
 #user-login-form > div .form-actions input[type="submit"] {
@@ -759,6 +780,7 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   align-items: center;
   min-height: 30px;
   font-size: 16px;
+  margin-top: 10px;
 }
 
 #user-login-form > div .form-actions input[type="submit"]:hover, #user-login-form > div .form-actions input[type="submit"]:focus, #user-login-form > div .form-actions input[type="submit"]:active {
