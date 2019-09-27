@@ -12,6 +12,7 @@
   textarea,
   input {
     max-width: 100%;
+    width: 100%;
     color: #999999;
     font-size: 13px;
     background-color: transparent;
@@ -27,9 +28,11 @@
 
   }
 
-}
-
-textarea {
+  input {
+    @media (min-width: $desk) {
+      width: auto;
+    }
+  }
 
 }
 
@@ -44,4 +47,9 @@ input[type="submit"] {
 
 .description {
   font-size: 0.8em;
+}
+
+.password-confirm,
+.password-strength {
+
 }

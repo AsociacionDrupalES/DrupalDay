@@ -80,6 +80,12 @@ img {
   }
 }
 
+.profile::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
 #main-content,
 .element-invisible,
 #skip-link {
@@ -134,6 +140,7 @@ img {
 .form-type-textarea textarea,
 .form-type-textarea input {
   max-width: 100%;
+  width: 100%;
   color: #999999;
   font-size: 13px;
   background-color: transparent;
@@ -151,6 +158,14 @@ img {
 .form-type-textarea textarea:focus,
 .form-type-textarea input:focus {
   background: white;
+}
+
+@media (min-width: 992px) {
+  .form-type-textfield input,
+  .form-type-password input,
+  .form-type-textarea input {
+    width: auto;
+  }
 }
 
 input[type="submit"] {
@@ -259,17 +274,33 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   }
 }
 
+.region-top-bar {
+  padding: 0 10px;
+}
+
 .region-highlighted__wrapper {
+  padding: 0 10px;
   position: relative;
+}
+
+@media (min-width: 992px) {
+  .region-highlighted__wrapper {
+    padding: 0;
+  }
 }
 
 .region-highlighted__logo {
   z-index: 10;
   padding: 0;
   margin: 0;
-  position: absolute;
-  top: 1em;
-  left: 74px;
+}
+
+@media (min-width: 992px) {
+  .region-highlighted__logo {
+    position: absolute;
+    top: 1em;
+    left: 74px;
+  }
 }
 
 #navigation {
@@ -301,6 +332,10 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   .main__content #content .column__content {
     padding-right: 15%;
   }
+}
+
+.main__content .region-sidebar-first {
+  margin-top: 5em;
 }
 
 @media (min-width: 992px) {
@@ -594,6 +629,16 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 
 #block-views-comunidad-block .block__title {
   margin-bottom: 15px;
+}
+
+#block-views-flexslider-home-block {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  #block-views-flexslider-home-block {
+    display: block;
+  }
 }
 
 #mailchimp-signup-subscribe-block-newsletter-form .form-actions {
