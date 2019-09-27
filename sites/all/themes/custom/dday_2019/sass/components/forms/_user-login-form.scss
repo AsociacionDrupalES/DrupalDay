@@ -7,6 +7,7 @@
 
     > .form-item {
       order: 1;
+      margin: 0;
 
       @media (min-width: $desk) {
         margin-right: 7px;

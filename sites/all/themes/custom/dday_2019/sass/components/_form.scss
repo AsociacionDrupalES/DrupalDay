@@ -9,6 +9,7 @@
     text-transform: uppercase;
   }
 
+  textarea,
   input {
     max-width: 100%;
     color: #999999;
@@ -26,4 +27,21 @@
 
   }
 
+}
+
+textarea {
+
+}
+
+input[type="submit"] {
+  @include btn-grey;
+  font-size: 100%;
+}
+
+.form-item {
+  margin: 1.5em 0;
+}
+
+.description {
+  font-size: 0.8em;
 }

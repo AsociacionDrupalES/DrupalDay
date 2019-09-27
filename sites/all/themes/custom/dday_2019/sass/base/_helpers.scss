@@ -35,7 +35,7 @@
   @include btn;
   color: white;
   background: $color-grey-b;
-  padding: 0.3em;
+  padding: 0.3em 0.5em;
 
   &:hover, &:focus, &:active {
     background: $color-red-a;
@@ -47,7 +47,7 @@
   @include btn;
   color: white;
   background: $color-red-a;
-  padding: 0.3em;
+  padding: 0.3em 0.5em;
 
   &:hover, &:focus, &:active {
     background: $color-red-b;

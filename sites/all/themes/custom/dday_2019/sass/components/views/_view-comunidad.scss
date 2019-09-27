@@ -1,15 +1,29 @@
 .view-comunidad {
 
-  ul {
+  &.view-display-id-block {
+
+    .view-content ul li {
+      width: calc(50% - 10px);
+      margin-bottom: 1em;
+    }
+
+  }
+
+  &.view-display-id-page {
+
+    .view-content ul li {
+      width: 19%;
+      padding-bottom: 1em;
+      margin: 1em auto;
+    }
+
+  }
+
+  .view-content ul {
     @include list-reset;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-
-    li {
-      width: 49%;
-    }
-
   }
 
   .views-field-picture {
