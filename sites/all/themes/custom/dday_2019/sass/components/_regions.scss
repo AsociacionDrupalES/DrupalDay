@@ -36,17 +36,31 @@
 
 }
 
+.region-top-bar {
+  padding: 0 10px;
+}
+
 .region-highlighted__wrapper {
+  padding: 0 10px;
   position: relative;
+
+  @media (min-width: $desk) {
+    padding: 0;
+  }
+
 }
 
 .region-highlighted__logo {
   z-index: 10;
   padding: 0;
   margin: 0;
-  position: absolute;
-  top: 1em;
-  left: 74px;
+
+  @media (min-width: $desk) {
+    position: absolute;
+    top: 1em;
+    left: 74px;
+  }
+
 }
 
 #navigation {
@@ -77,6 +91,7 @@
   }
 
   .region-sidebar-first {
+    margin-top: 5em;
 
     @media (min-width: $desk) {
       width: 20%;

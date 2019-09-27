@@ -1,0 +1,8 @@
+#block-views-flexslider-home-block {
+  display: none;
+
+  @media(min-width: $desk) {
+    display: block;
+  }
+
+}
