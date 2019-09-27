@@ -1,0 +1,17 @@
+#block-system-user-menu {
+
+  .block__title {
+    @include hidden;
+  }
+
+  .menu {
+    @include list-reset;
+
+    li {
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+  }
+
+}

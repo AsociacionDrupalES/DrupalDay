@@ -1,3 +1,4 @@
+.top-bar__content,
 .header,
 .main__content,
 .footer__content,
@@ -11,6 +12,7 @@
 }
 
 .header__region {
+  min-height: 75px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -27,6 +29,7 @@
 
     @media (min-width: $desk) {
       width: 50%;
+      flex-grow: 2;
     }
 
   }

@@ -22,6 +22,13 @@ h1, h2 {
   text-transform: uppercase;
 }
 
+h1 {
+  font-size: 2em;
+  line-height: 1.5em;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
 h2 {
   font-size: 1.5em;
 }
@@ -46,10 +53,38 @@ img {
   vertical-align: top;
 }
 
+.field-name-body {
+
+  h1, h2, h3, h4 {
+    margin: 1em 0;
+  }
+
+  a {
+    color: $color-red-a;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+
+  }
+
+}
+
 .node__title, .block__title, .comments__title, .comments__form-title, .comment__title {
   margin: 0;
 }
 
+.page__title {
+  color: $color-red-a;
+  margin: 0 0 0.75em;
+
+  @media(min-width: $desk) {
+    margin: 1.5em 0 0.75em;
+  }
+
+}
+
+#main-content,
 .element-invisible,
 #skip-link {
   @include hidden;
