@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * noticias.views_default.inc
@@ -55,7 +56,7 @@ function noticias_views_default_views() {
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Criterios de filtrado: Contenido: Publicado */
+  /* Criterios de filtrado: Contenido: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
