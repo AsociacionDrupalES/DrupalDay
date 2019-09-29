@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * noticias.default_picture_mapping.inc

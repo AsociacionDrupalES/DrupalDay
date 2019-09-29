@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * content_sesion.features.user_permission.inc
@@ -24,6 +25,7 @@ function content_sesion_user_default_permissions() {
     'name' => 'create sesion content',
     'roles' => array(
       'administrator' => 'administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -42,6 +44,7 @@ function content_sesion_user_default_permissions() {
     'name' => 'delete own sesion content',
     'roles' => array(
       'administrator' => 'administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
