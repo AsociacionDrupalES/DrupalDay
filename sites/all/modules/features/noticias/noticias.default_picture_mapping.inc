@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * noticias.default_picture_mapping.inc
@@ -17,25 +18,25 @@ function noticias_default_picture_mapping() {
   $picture_mapping->machine_name = 'image_teaser';
   $picture_mapping->breakpoint_group = 'image_teaser';
   $picture_mapping->mapping = array(
-    'breakpoints.theme.dday_2014.fluid' => array(
+    'breakpoints.theme.dday_2019.fluid' => array(
       '1x' => array(
         'mapping_type' => 'image_style',
         'image_style' => 'teaser_big',
       ),
     ),
-    'breakpoints.theme.dday_2014.tablet' => array(
+    'breakpoints.theme.dday_2019.tablet' => array(
       '1x' => array(
         'mapping_type' => 'image_style',
         'image_style' => 'teaser',
       ),
     ),
-    'breakpoints.theme.dday_2014.desktop' => array(
+    'breakpoints.theme.dday_2019.desktop' => array(
       '1x' => array(
         'mapping_type' => 'image_style',
         'image_style' => 'teaser',
       ),
     ),
-    'breakpoints.theme.dday_2014.$desktop-l' => array(
+    'breakpoints.theme.dday_2019.$desktop-l' => array(
       '1x' => array(
         'mapping_type' => 'image_style',
         'image_style' => 'teaser',

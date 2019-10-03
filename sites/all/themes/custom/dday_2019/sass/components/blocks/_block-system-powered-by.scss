@@ -1,0 +1,13 @@
+#block-system-powered-by {
+  margin-bottom: 1.5em;
+
+  a {
+    color: $color-red-a;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+
+  }
+
+}

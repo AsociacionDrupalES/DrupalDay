@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * noticias.default_breakpoint_group.inc
@@ -16,10 +17,10 @@ function noticias_default_breakpoint_group() {
   $breakpoint_group->machine_name = 'image_teaser';
   $breakpoint_group->name = 'Image teaser';
   $breakpoint_group->breakpoints = array(
-    0 => 'breakpoints.theme.dday_2014.fluid',
-    1 => 'breakpoints.theme.dday_2014.tablet',
-    2 => 'breakpoints.theme.dday_2014.desktop',
-    3 => 'breakpoints.theme.dday_2014.$desktop-l',
+    0 => 'breakpoints.theme.dday_2019.fluid',
+    1 => 'breakpoints.theme.dday_2019.tablet',
+    2 => 'breakpoints.theme.dday_2019.desktop',
+    3 => 'breakpoints.theme.dday_2019.$desktop-l',
   );
   $breakpoint_group->type = 'custom';
   $breakpoint_group->overridden = 0;

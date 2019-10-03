@@ -1,0 +1,103 @@
+@mixin container {
+  max-width: 100%;
+  margin: 0 auto;
+
+  @media (min-width: $desk) {
+    max-width: $max-width;
+  }
+
+}
+
+@mixin hidden {
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin btn {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+  -webkit-appearance: button;
+
+  &:hover, &:focus, &:active {
+    box-shadow: none;
+  }
+
+}
+
+@mixin btn-grey {
+  @include btn;
+  color: white;
+  background: $color-grey-b;
+  padding: 0.3em 0.5em;
+
+  &:hover, &:focus, &:active {
+    background: $color-red-a;
+  }
+
+}
+
+@mixin btn-red {
+  @include btn;
+  color: white;
+  background: $color-red-a;
+  padding: 0.3em 0.5em;
+
+  &:hover, &:focus, &:active {
+    background: $color-red-b;
+  }
+
+}
+
+@mixin btn-light-grey {
+  @include btn;
+  display: block;
+  color: $color-red-a;
+  font-size: 18.72px;
+  text-align: center;
+  text-decoration: none;
+  background-color: transparent;
+  border: 2px solid $color-red-a;
+  border-radius: 3px;
+  padding: 1em;
+
+  &:hover, &:focus, &:active {
+    color: #fff;
+    background-color: $color-red-a;
+  }
+
+}
+
+@mixin list-reset {
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+}
+
+// Images
+//////////////////////////////
+$image_base_path: "../images/";
+// Replacement form image-url()
+@function image-url($img) {
+  @return $image_base_path + $img;
+}
+
+@mixin clearfix() {
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}

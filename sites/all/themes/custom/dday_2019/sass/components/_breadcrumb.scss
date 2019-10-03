@@ -1,0 +1,22 @@
+.breadcrumb {
+  font-size: 0.8em;
+  margin-top: 32px;
+
+  ol {
+    @include list-reset;
+
+    li {
+      display: inline;
+    }
+
+    a {
+      color: $color-grey-b;
+
+      &:hover, &:active {
+        text-decoration: underline;
+      }
+
+    }
+  }
+
+}

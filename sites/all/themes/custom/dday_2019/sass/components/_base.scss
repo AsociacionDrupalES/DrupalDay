@@ -1,0 +1,95 @@
+html {
+  background-color: $color-grey-a;
+}
+
+body {
+  max-width: 100%;
+  color: $color-black-a;
+  font-size: 16px;
+  font-family: $base-font-family;
+  line-height: 1.5em;
+  padding: 0;
+  margin: 0;
+
+  * {
+    box-sizing: border-box;
+  }
+
+}
+
+h1, h2 {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 2em;
+  line-height: 1.5em;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+a {
+  display: inline-block;
+  color: $color-black-a;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+  transition: all .4s;
+
+  &:hover, &:active {
+    color: $color-red-a;
+  }
+
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+.field-name-body {
+
+  h1, h2, h3, h4 {
+    margin: 1em 0;
+  }
+
+  a {
+    color: $color-red-a;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+
+  }
+
+}
+
+.node__title, .block__title, .comments__title, .comments__form-title, .comment__title {
+  margin: 0;
+}
+
+.page__title {
+  color: $color-red-a;
+  margin: 0 0 0.75em;
+
+  @media(min-width: $desk) {
+    margin: 1.5em 0 0.75em;
+  }
+
+}
+
+.profile {
+  @include clearfix;
+}
+
+#main-content,
+.element-invisible,
+#skip-link {
+  @include hidden;
+}

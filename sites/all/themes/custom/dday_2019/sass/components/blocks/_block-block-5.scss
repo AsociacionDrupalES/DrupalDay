@@ -1,0 +1,15 @@
+#block-block-5 {
+
+  h2 {
+
+    > a {
+      color: $color-red-a;
+
+      &:hover, &:active {
+        text-decoration: underline;
+      }
+
+    }
+  }
+
+}

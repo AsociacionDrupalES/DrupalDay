@@ -1,0 +1,26 @@
+ul.pager {
+  text-align: center;
+  padding: 0;
+  margin: 1em 0 0 0;
+
+  a {
+    color: $color-red-a;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+
+  }
+
+  .pager-current {
+    font-weight: bold;
+  }
+
+  .pager-item, .pager-first, .pager-previous, .pager-next, .pager-last, .pager-ellipsis, .pager-current {
+    display: inline;
+    list-style-type: none;
+    background-image: none;
+    padding: 0 0.5em;
+  }
+
+}

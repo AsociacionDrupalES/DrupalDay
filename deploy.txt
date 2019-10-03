@@ -1,0 +1,1 @@
+En esta pagina buscar la variable 480 y cambiar por 992: /admin/config/user-interface/responsive_menus

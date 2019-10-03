@@ -1,0 +1,62 @@
+.view-comunidad {
+
+  &.view-display-id-block {
+
+    .view-content ul li {
+      width: calc(50% - 10px);
+      margin-bottom: 1em;
+    }
+
+  }
+
+  &.view-display-id-page {
+
+    .view-content ul li {
+      width: 19%;
+      padding-bottom: 1em;
+      margin: 1em auto;
+    }
+
+  }
+
+  .view-content ul {
+    @include list-reset;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .views-field-picture {
+
+    .field-content {
+      width: 70px;
+      height: 70px;
+    }
+
+  }
+
+  .views-field-name {
+    line-height: 1em;
+    border: 2px solid $color-red-a;
+    border-radius: 4px;
+    padding: 2px 0 3px 0;
+
+    a {
+      color: $color-red-a;
+    }
+
+  }
+
+  .field-content {
+    text-align: center;
+    margin: 0 auto;
+
+    a {
+      display: block;
+      color: $color-red-a;
+      font-size: 12.24px;
+    }
+
+  }
+
+}

@@ -1,0 +1,23 @@
+.search-results {
+  @include list-reset;
+
+  .search-result {
+    margin: 1em 0;
+
+    .title {
+      font-weight: normal;
+      margin: 0 0 3px;
+    }
+
+  }
+
+  a {
+    color: $color-red-a;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+
+  }
+
+}

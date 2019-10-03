@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * noticias.features.field_base.inc

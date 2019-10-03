@@ -30,6 +30,7 @@ function responsive_menus_permission() {
     'administer responsive menus' => array(
       'title' => t('Administer Responsive Menus'),
       'description' => t('Configure settings for responsive menus module.'),
+      'restrict access' => TRUE,
     ),
   );
 }
@@ -282,13 +283,25 @@ function responsive_menus_admin_form_submit($form, &$form_state) {
   // Exclude unnecessary elements.
   form_state_values_clean($form_state);
 
+  // Which field types to run filter_xss() on.
+  $filter_types = array(
+    'textfield',
+    'textarea',
+  );
+
   foreach ($form_state['values'] as $key => $value) {
     if (is_array($value) && isset($form_state['values']['array_filter'])) {
       $value = array_keys(array_filter($value));
     }
     if ($key == 'responsive_menus_style_settings') {
       foreach ($value as $style_key => $style_value) {
-        variable_set($style_key, $style_value);
+        // If the field is a type we should filter.
+        if (in_array($form['responsive_menus_style_settings'][$style_key]['#type'], $filter_types, TRUE)) {
+          variable_set($style_key, filter_xss($style_value));
+        }
+        else {
+          variable_set($style_key, $style_value);
+        }
       }
     }
     else {
@@ -800,13 +813,13 @@ function responsive_menus_sidr_style_settings() {
   $form['responsive_menus_sidr_on_open'] = array(
     '#type' => 'textarea',
     '#title' => t('onOpen callback (function)'),
-    '#description' => t('See !documentation for examples.', array('!documentation' => l(t('Sidr documentation'), 'http://www.berriart.com/sidr/#documentation'))),
+    '#description' => t("Enter Javacript to be called when the menu is opened.  Example: alert('Great job'); See !documentation for examples.", array('!documentation' => l(t('Sidr documentation'), 'http://www.berriart.com/sidr/#documentation'))),
     '#default_value' => variable_get('responsive_menus_sidr_on_open', ''),
   );
   $form['responsive_menus_sidr_on_close'] = array(
     '#type' => 'textarea',
     '#title' => t('onClose callback (function)'),
-    '#description' => t('See !documentation for examples.', array('!documentation' => l(t('Sidr documentation'), 'http://www.berriart.com/sidr/#documentation'))),
+    '#description' => t("Enter Javacript to be called when the menu is closed.  Example: alert('Great job'); See !documentation for examples.", array('!documentation' => l(t('Sidr documentation'), 'http://www.berriart.com/sidr/#documentation'))),
     '#default_value' => variable_get('responsive_menus_sidr_on_close', ''),
   );
 
@@ -1248,8 +1261,25 @@ function responsive_menus_execute($style = NULL, $js_defaults = array()) {
       drupal_add_css($css_file);
     }
   }
+
+  $filtered_settings = array();
+  foreach ($style_info['js_settings']($js_defaults) as $setting_index => $setting) {
+    if (!is_array($setting)) {
+      $filtered_settings[$setting_index] = filter_xss_admin($setting);
+    }
+    else {
+      foreach ($setting as $sub_index => $sub_value) {
+        $filtered_settings[$setting_index][$sub_index] = filter_xss_admin($sub_value);
+      }
+    }
+  }
+
+  if (!isset($filtered_settings['selectors'])) {
+    $filtered_settings['selectors'] = array();
+  }
+
   // Add JS settings.
-  $js_settings[$data['execute_index']] = $style_info['js_settings']($js_defaults);
+  $js_settings[$data['execute_index']] = $filtered_settings;
   $js_settings[$data['execute_index']]['responsive_menus_style'] = $style;
   drupal_alter('responsive_menus_execute', $js_settings);
   drupal_add_js(array('responsive_menus' => $js_settings), 'setting');
