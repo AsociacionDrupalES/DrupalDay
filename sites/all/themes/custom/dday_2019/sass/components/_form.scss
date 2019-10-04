@@ -49,7 +49,40 @@ input[type="submit"] {
   font-size: 0.8em;
 }
 
-.password-confirm,
-.password-strength {
+.form-actions {
+
+  > * {
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+  }
+
+}
+
+.form-required {
+  color: $color-red-a;
+}
+
+.form-type-select {
+
+  label {
+    display: block;
+  }
+
+}
+
+.field-widget-options-buttons > .form-item {
+
+  > label {
+    display: block;
+    margin-bottom: .6em;
+  }
+
+  .form-item {
+    margin: 0 0 0.5em;
+  }
 
 }

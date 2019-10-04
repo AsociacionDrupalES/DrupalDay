@@ -1,0 +1,20 @@
+#views-exposed-form-sesiones-page {
+
+  .views-exposed-form {
+    margin-bottom: 30px;
+  }
+
+  .views-exposed-widgets {
+
+    > div {
+      padding-top: 0;
+      padding-right: 1.5em;
+
+      &:last-child {
+        padding-right: 0;
+      }
+
+    }
+  }
+
+}

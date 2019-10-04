@@ -1,0 +1,25 @@
+#block-menu-menu-footer {
+
+  > .menu {
+    @include list-reset;
+
+    li {
+      display: inline-block;
+      margin-right: 20px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      a {
+        color: white;
+
+        &:hover, &:active {
+          text-decoration: underline;
+        }
+
+      }
+    }
+  }
+
+}
