@@ -198,6 +198,31 @@ input[type="submit"]:hover, input[type="submit"]:focus, input[type="submit"]:act
   font-size: 0.8em;
 }
 
+.form-actions > * {
+  margin-right: 20px;
+}
+
+.form-actions > *:last-child {
+  margin-right: 0;
+}
+
+.form-required {
+  color: #da291c;
+}
+
+.form-type-select label {
+  display: block;
+}
+
+.field-widget-options-buttons > .form-item > label {
+  display: block;
+  margin-bottom: .6em;
+}
+
+.field-widget-options-buttons > .form-item .form-item {
+  margin: 0 0 0.5em;
+}
+
 ul.pager {
   text-align: center;
   padding: 0;
@@ -357,6 +382,15 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 .main__content .region-sidebar-first .block__title {
   color: #da291c;
   line-height: 1em;
+}
+
+#footer {
+  background: #da291c;
+  margin-top: 30px;
+}
+
+#footer .footer__content {
+  padding: 20px 0;
 }
 
 .search-results {
@@ -530,6 +564,34 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   margin-bottom: 5px;
 }
 
+#block-menu-menu-footer > .menu {
+  padding: 0;
+  margin: 0;
+}
+
+#block-menu-menu-footer > .menu li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#block-menu-menu-footer > .menu li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+#block-menu-menu-footer > .menu li:last-child {
+  margin-right: 0;
+}
+
+#block-menu-menu-footer > .menu li a {
+  color: white;
+}
+
+#block-menu-menu-footer > .menu li a:hover, #block-menu-menu-footer > .menu li a:active {
+  text-decoration: underline;
+}
+
 .block-nice-menus {
   text-align: center;
 }
@@ -621,6 +683,7 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 #block-system-user-menu .menu {
   padding: 0;
   margin: 0;
+  margin: 20px 0;
 }
 
 #block-system-user-menu .menu li {
@@ -707,6 +770,38 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   position: absolute;
   right: 0.5em;
   top: 0.3em;
+}
+
+#sesion-node-form .field-type-text-with-summary {
+  margin-bottom: 1em;
+}
+
+#sesion-node-form .fieldset-wrapper > div.form-wrapper {
+  margin: 0 0 2.5em;
+}
+
+#sesion-node-form .fieldset-wrapper > div.form-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+#sesion-node-form .form-field-name-field-speaker .field-multiple-table {
+  width: 100%;
+}
+
+#sesion-node-form .form-field-name-field-speaker .field-multiple-table th {
+  text-align: left;
+}
+
+#sesion-node-form .form-field-name-field-speaker .field-multiple-table td .form-item {
+  margin: 0 0 5px;
+}
+
+#sesion-node-form .form-field-name-field-speaker .field-multiple-table td .form-required {
+  display: none;
+}
+
+#sesion-node-form .form-actions {
+  margin-top: 1em;
 }
 
 #user-login-form > div {
@@ -797,6 +892,19 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 
 #user-register-form .form-actions {
   margin-top: 1em;
+}
+
+#views-exposed-form-sesiones-page .views-exposed-form {
+  margin-bottom: 30px;
+}
+
+#views-exposed-form-sesiones-page .views-exposed-widgets > div {
+  padding-top: 0;
+  padding-right: 1.5em;
+}
+
+#views-exposed-form-sesiones-page .views-exposed-widgets > div:last-child {
+  padding-right: 0;
 }
 
 .node-noticias.view-mode-teaser {
@@ -893,9 +1001,30 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
   margin: 0;
 }
 
+.view-comunidad .views-field-name,
+.view-comunidad .views-field-picture {
+  max-width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 992px) {
+  .view-comunidad .views-field-name,
+  .view-comunidad .views-field-picture {
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
+
 .view-comunidad .views-field-picture .field-content {
-  width: 70px;
-  height: 70px;
+  min-height: 100px;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 5px;
+}
+
+.view-comunidad .views-field-picture .field-content a {
+  display: block;
 }
 
 .view-comunidad .views-field-name {
@@ -993,6 +1122,31 @@ ul.pager .pager-item, ul.pager .pager-first, ul.pager .pager-previous, ul.pager 
 
 .view-flexslider-home .view-content .flexslider .flex-control-nav {
   bottom: 0;
+}
+
+.view-sesiones .view-content table {
+  border-collapse: collapse;
+}
+
+.view-sesiones .view-content table thead tr {
+  background: #da291c;
+}
+
+.view-sesiones .view-content table tbody tr:nth-child(even) {
+  background: white;
+}
+
+.view-sesiones .view-content table tbody td {
+  padding: 5px;
+}
+
+.view-sesiones .view-content .footable > thead > tr > th {
+  text-align: left;
+  padding: 5px;
+}
+
+.view-sesiones .view-content .footable > thead > tr > th a {
+  color: white;
 }
 
 @media (min-width: 992px) {

@@ -1,0 +1,48 @@
+#sesion-node-form {
+
+  .field-type-text-with-summary {
+    margin-bottom: 1em;
+  }
+
+  .fieldset-wrapper {
+
+    > div.form-wrapper {
+      margin: 0 0 2.5em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+    }
+
+  }
+
+  .form-field-name-field-speaker {
+
+    .field-multiple-table {
+      width: 100%;
+
+      th {
+        text-align: left;
+      }
+
+      td {
+
+        .form-item {
+          margin: 0 0 5px;
+        }
+
+        .form-required {
+          display: none;
+        }
+
+      }
+    }
+
+  }
+
+  .form-actions {
+    margin-top: 1em;
+  }
+
+}

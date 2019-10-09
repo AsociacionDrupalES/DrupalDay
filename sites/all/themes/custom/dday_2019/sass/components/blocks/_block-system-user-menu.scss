@@ -6,6 +6,7 @@
 
   .menu {
     @include list-reset;
+    margin: 20px 0;
 
     li {
       display: inline-block;

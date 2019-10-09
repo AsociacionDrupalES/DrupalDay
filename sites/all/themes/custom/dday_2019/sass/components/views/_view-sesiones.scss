@@ -1,0 +1,45 @@
+.view-sesiones {
+
+  .view-content {
+
+    table {
+      border-collapse: collapse;
+
+      thead {
+
+        tr {
+          background: $color-red-a;
+        }
+
+      }
+
+      tbody {
+
+        tr {
+
+          &:nth-child(even) {
+            background: white;
+          }
+
+        }
+
+        td {
+          padding: 5px;
+        }
+
+      }
+
+    }
+
+    .footable > thead > tr > th {
+      text-align: left;
+      padding: 5px;
+
+      a {
+        color: white;
+      }
+
+    }
+  }
+
+}

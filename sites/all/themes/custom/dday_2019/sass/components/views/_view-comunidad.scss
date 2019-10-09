@@ -26,11 +26,31 @@
     justify-content: space-between;
   }
 
+  .views-field-name,
+  .views-field-picture {
+    max-width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: $desk) {
+      margin-right: 0;
+      margin-left: 0;
+    }
+
+  }
+
   .views-field-picture {
 
     .field-content {
-      width: 70px;
-      height: 70px;
+      min-height: 100px;
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 5px;
+
+      a {
+        display: block;
+      }
+
     }
 
   }
